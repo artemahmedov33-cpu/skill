@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /privacy.html
+
+Sitemap: https://skillgaming.ru/sitemap.xml
+Host: https://skillgaming.ru

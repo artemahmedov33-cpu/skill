@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skill Gaming — гоночные симуляторы и компьютерный клуб в Волгограде</title>
+<meta name="description" content="Гоночные симуляторы и компьютерный клуб Skill Gaming в центре Волгограда: руль MOZA с прямым приводом, три изогнутых экрана, заезд от 350 ₽. Краснознаменская, 6. Круглосуточно.">
+<meta name="theme-color" content="#101317">
+<link rel="canonical" href="https://skillgaming.ru/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Skill Gaming — гоночные симуляторы в центре Волгограда">
+<meta property="og:description" content="Руль MOZA, три экрана, секвентальная коробка. Заезд 30 минут — 350 ₽, час — 500 ₽. Круглосуточно, Краснознаменская, 6.">
+<meta property="og:image" content="img/sim.webp">
+<meta property="og:locale" content="ru_RU">
+<link rel="icon" type="image/svg+xml" href="img/mark.svg">
+<link rel="icon" type="image/png" sizes="64x64" href="img/favicon-64.png">
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EntertainmentBusiness",
+  "name": "Skill Gaming",
+  "description": "Компьютерный клуб и гоночные симуляторы в центре Волгограда",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Краснознаменская улица, 6, цокольный этаж",
+    "addressLocality": "Волгоград",
+    "addressRegion": "Волгоградская область",
+    "addressCountry": "RU"
+  },
+  "geo": { "@type": "GeoCoordinates", "latitude": 48.702996, "longitude": 44.512491 },
+  "telephone": "+7 800 444-26-34",
+  "email": "topskillclub@mail.ru",
+  "url": "https://skillgaming.ru/",
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+    "opens": "00:00", "closes": "23:59"
+  },
+  "priceRange": "119–800 ₽",
+  "sameAs": ["https://vk.com/skillgaming", "https://t.me/Top_Skill_Club"],
+  "makesOffer": [
+    { "@type": "Offer", "name": "Гоночный симулятор, 1 час", "price": "500", "priceCurrency": "RUB" },
+    { "@type": "Offer", "name": "Гоночный симулятор, 30 минут", "price": "350", "priceCurrency": "RUB" },
+    { "@type": "Offer", "name": "ПК Standart, 1 час", "price": "119", "priceCurrency": "RUB" },
+    { "@type": "Offer", "name": "ПК Pro, 1 час", "price": "139", "priceCurrency": "RUB" },
+    { "@type": "Offer", "name": "PlayStation 5, 1 час", "price": "280", "priceCurrency": "RUB" }
+  ]
+}
+</script>
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+<div id="lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+
+<header id="hdr">
+  <a class="logo" href="index.html" aria-label="Skill Gaming — на главную"><img class="mark" src="img/mark.svg" alt="" width="26" height="26">Skill<s>.</s>Gaming</a>
+  <nav>
+    <a href="simulators.html">Симуляторы</a>
+    <a href="pc.html">ПК и PS5</a>
+    <a href="#zones">Тарифы</a>
+    <a href="#contacts">Контакты</a>
+  </nav>
+  <button class="burger" id="burger" aria-label="Меню" aria-expanded="false"><i></i><i></i></button>
+  <a class="tel" href="tel:88004442634">8 800 444-26-34</a>
+</header>
+
+<main class="z">
+  <section class="hero" id="hero">
+    <div>
+      <div class="eyebrow">SimRacing · Краснознаменская 6 · круглосуточно</div>
+      <h1>
+        <span class="line"><i>Трасса</i></span>
+        <span class="line"><i>в центре</i></span>
+        <span class="line"><i><em>Волгограда</em></i></span>
+      </h1>
+      <p class="lead">Гоночный симулятор, который передаёт вес машины в руки: руль с отдачей, нагрузочные педали, кокпит и 32-дюймовый экран на 144 Гц. Первый круг — через десять минут после входа.</p>
+      <div class="cta">
+        <a class="btn" href="#booking"><span>Забронировать заезд</span></a>
+        <a class="btn ghost" href="simulators.html"><span>О симуляторах</span></a>
+      </div>
+      <div class="specs">
+        <div><b>3 экрана</b><span>панорама вокруг</span></div>
+        <div><b>MOZA</b><span>прямой привод</span></div>
+        <div><b>350 ₽</b><span>за 30 минут</span></div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="hud">
+        <div>Круг <b id="lap">1:38.42</b></div>
+        <div>Скорость <b id="spd">214</b></div>
+        <div>Передача <b id="gear">5</b></div>
+      </div>
+
+      <svg viewBox="0 0 400 400" aria-label="Схема трассы">
+        <g transform="translate(-14,-30) scale(.9)">
+        <path id="track" class="track-bed"
+          d="M92 300 C 40 262, 46 168, 108 146 C 168 124, 190 150, 228 128
+             C 272 102, 320 118, 336 158 C 352 200, 322 232, 286 240
+             C 246 249, 232 268, 244 296 C 258 328, 236 356, 196 352
+             C 150 347, 132 330, 92 300 Z"/>
+        <use href="#track" class="track-line"/>
+        <use href="#track" class="track-live" id="live"/>
+        <circle class="car" id="car" r="5" cx="92" cy="300"/>
+        <text class="sector" x="60" y="140">СЕКТОР 1</text>
+        <text class="sector" x="300" y="112">СЕКТОР 2</text>
+        <text class="sector" x="228" y="380">СЕКТОР 3</text>
+        </g>
+      </svg>
+
+      <svg class="rpm" viewBox="0 0 100 100" aria-label="Тахометр">
+        <circle class="rpm-bg" cx="50" cy="50" r="49"/>
+        <path class="rpm-arc" d="M18 78 A 42 42 0 1 1 82 78"/>
+        <path class="rpm-fill" id="rpmfill" d="M18 78 A 42 42 0 1 1 82 78" stroke-dasharray="0 400"/>
+        <g id="ticks"></g>
+        <line class="rpm-needle" id="needle" x1="50" y1="50" x2="50" y2="18"/>
+        <circle cx="50" cy="50" r="3.5" fill="var(--white)"/>
+        <text class="rpm-val" x="50" y="90" id="rpmval">0000</text>
+        <text class="rpm-lbl" x="50" y="97">RPM</text>
+        <text class="rpm-hint" x="50" y="66">НАВЕРХ</text>
+      </svg>
+    </div>
+  </section>
+
+  <section class="zones" id="zones">
+    <div class="sec-top">
+      <h2>Четыре зоны<br>под разный вечер</h2>
+      <p>Цены с прайса клуба. Кэшбек 25% начисляется с каждого визита.</p>
+    </div>
+    <div class="cards">
+      <article class="card hero-card">
+        <img src="img/sim.webp" alt="Гоночный симулятор Skill Racing: три экрана, руль MOZA, красный ковш" loading="lazy">
+        <div class="card-body">
+          <span class="no">01 / RACING</span>
+          <h3>Гоночный<br>симулятор</h3>
+          <ul>
+            <li>Три изогнутых экрана и руль с прямым приводом</li>
+            <li>Секвентальная коробка и ковш на жёсткой раме</li>
+            <li>Инструктаж для первого заезда</li>
+          </ul>
+          <div class="price"><b>500</b><span>₽ / час</span><u>350 ₽ за 30 минут</u></div>
+        </div>
+      </article>
+
+      <article class="card">
+        <img src="img/guest.webp" alt="Гость за компьютером в зоне Pro" loading="lazy">
+        <div class="card-body">
+          <span class="no">02 / PRO</span>
+          <h3>ПК Pro</h3>
+          <ul>
+            <li>10 мест · монитор 27" 240 Гц</li>
+            <li>Core i7-9700K · RTX 3060 Ti · 16 ГБ</li>
+            <li>3 часа — 340 ₽, 5 часов — 490 ₽</li>
+            <li>Ночь 459 ₽, в выходные 499 ₽</li>
+          </ul>
+          <div class="price"><b>139</b><span>₽ / час</span><u>утро 250 ₽</u></div>
+          <div class="draft">конфигурацию уточняем у клуба</div>
+        </div>
+      </article>
+
+      <article class="card">
+        <img src="img/hall.webp" alt="Зал клуба Skill Gaming" loading="lazy">
+        <div class="card-body">
+          <span class="no">03 / STANDART</span>
+          <h3>ПК Standart</h3>
+          <ul>
+            <li>17 мест · монитор 27" 144 Гц</li>
+            <li>Core i7-8700K · RTX 2060 · 16 ГБ</li>
+            <li>3 часа — 280 ₽, 5 часов — 420 ₽</li>
+            <li>Ночь 399 ₽, в выходные 459 ₽</li>
+          </ul>
+          <div class="price"><b>119</b><span>₽ / час</span><u>утро 200 ₽</u></div>
+          <div class="draft">конфигурацию уточняем у клуба</div>
+        </div>
+      </article>
+
+      <article class="card">
+        <img src="img/headset.webp" alt="Гость в наушниках за игрой" loading="lazy">
+        <div class="card-body">
+          <span class="no">04 / TV</span>
+          <h3>PlayStation 5</h3>
+          <ul>
+            <li>Консоль на большом экране, геймпады</li>
+            <li>3 часа — 600 ₽</li>
+            <li>Ночь — 800 ₽</li>
+          </ul>
+          <div class="price"><b>280</b><span>₽ / час</span><u>компанией выгоднее</u></div>
+        </div>
+      </article>
+    </div>
+
+    <div class="rates">
+      <div class="rates-head">
+        <h3>Полный прайс</h3><span class="rates-live">цены действующие</span>
+        <span class="cashback">Кэшбек 25% с каждого визита</span>
+      </div>
+      <div class="rates-scroll">
+        <table>
+          <thead>
+            <tr><th>Тариф</th><th>Standart</th><th>Pro</th><th>PS5</th><th>Racing</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1 час</td><td>119 ₽</td><td>139 ₽</td><td>280 ₽</td><td>500 ₽</td></tr>
+            <tr><td>30 минут</td><td>—</td><td>—</td><td>—</td><td>350 ₽</td></tr>
+            <tr><td>3 часа</td><td>280 ₽</td><td>340 ₽</td><td>600 ₽</td><td>—</td></tr>
+            <tr><td>5 часов</td><td>420 ₽</td><td>490 ₽</td><td>—</td><td>—</td></tr>
+            <tr><td>Утро</td><td>200 ₽</td><td>250 ₽</td><td>—</td><td>—</td></tr>
+            <tr><td>Ночь, 22:00–08:00</td><td>399 ₽</td><td>459 ₽</td><td>800 ₽</td><td>—</td></tr>
+            <tr><td>Ночь в выходные</td><td>459 ₽</td><td>499 ₽</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="disclaimer">Прайс взят с плаката клуба и карточки на Яндекс.Картах — подтверждаем актуальность по брифу.</p>
+    </div>
+  </section>
+  <!-- ================= Анатомия кокпита ================= -->
+  <section class="rig" id="rig">
+    <div class="sec-top">
+      <h2>Что стоит<br>в кокпите</h2>
+      <p>Не «компьютер с рулём»: кокпит собран как тренажёр — жёсткая рама, нагрузочные педали, отдача на руле. Наведите на узел, чтобы найти его на схеме.</p>
+    </div>
+
+    <div class="rig-grid">
+      <div class="blueprint">
+        <svg viewBox="0 0 640 400" aria-label="Схема гоночного кокпита">
+          <defs>
+            <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+              <path d="M32 0 H0 V32" fill="none" stroke="#20252C" stroke-width="1"/>
+            </pattern>
+          </defs>
+          <rect x="0" y="0" width="640" height="400" fill="url(#grid)"/>
+          <line class="bp-floor" x1="40" y1="345" x2="600" y2="345"/>
+
+          <!-- 03 рама -->
+          <g class="bp-part" data-part="rig">
+            <rect class="bp-line" x="168" y="250" width="356" height="11" rx="2"/>
+            <path class="bp-line" d="M180 261 L180 345 M512 261 L512 345 M180 300 L512 300"/>
+            <path class="bp-line" d="M180 261 L146 345 M512 261 L548 345"/>
+            <text class="bp-num" x="150" y="292">03</text>
+          </g>
+
+          <!-- 04 кресло -->
+          <g class="bp-part" data-part="seat">
+            <path class="bp-line" d="M214 250 L300 248 C309 248 312 242 310 236 L220 238 Z"/>
+            <path class="bp-line" d="M220 238 L202 154 C200 143 208 135 219 136 L243 141 L258 232"/>
+            <path class="bp-line" d="M206 160 L186 155"/>
+            <text class="bp-num" x="176" y="132">04</text>
+          </g>
+
+          <!-- 01 руль -->
+          <g class="bp-part" data-part="wheel">
+            <line class="bp-line" x1="360" y1="250" x2="360" y2="216"/>
+            <circle class="bp-line" cx="360" cy="186" r="30"/>
+            <circle class="bp-line" cx="360" cy="186" r="8"/>
+            <path class="bp-line" d="M338 168 L382 204 M382 168 L338 204"/>
+            <text class="bp-num" x="360" y="138" text-anchor="middle">01</text>
+          </g>
+
+          <!-- 02 педали -->
+          <g class="bp-part" data-part="pedals">
+            <rect class="bp-line" x="392" y="242" width="76" height="8" rx="1"/>
+            <path class="bp-line" d="M402 242 L416 214 M424 242 L438 214 M446 242 L460 214"/>
+            <path class="bp-line" d="M413 214 L420 211 M435 214 L442 211 M457 214 L464 211"/>
+            <text class="bp-num" x="392" y="272">02</text>
+          </g>
+
+          <!-- 05 три экрана -->
+          <g class="bp-part" data-part="screen">
+            <path class="bp-line" d="M300 96 L300 176"/>
+            <rect class="bp-line" x="300" y="86" width="176" height="96" rx="3"/>
+            <path class="bp-line" d="M476 86 L556 104 L556 190 L476 182 Z"/>
+            <path class="bp-line" d="M300 86 L232 104 L232 190 L300 182"/>
+            <path class="bp-line" d="M388 182 L388 250 M362 250 L414 250"/>
+            <text class="bp-num" x="566" y="100">05</text>
+          </g>
+
+          <!-- 06 секвентальная коробка -->
+          <g class="bp-part" data-part="shifter">
+            <path class="bp-line" d="M470 250 L470 224 L462 216"/>
+            <circle class="bp-line" cx="459" cy="212" r="6"/>
+            <rect class="bp-line" x="452" y="250" width="36" height="7" rx="1"/>
+            <text class="bp-num" x="498" y="212">06</text>
+          </g>
+
+          <g class="bp-dim">
+            <line x1="146" y1="368" x2="548" y2="368"/>
+            <path d="M146 363 L146 373 M548 363 L548 373"/>
+            <text x="347" y="386" text-anchor="middle">ОДИН КОКПИТ · ОДИН ГОСТЬ</text>
+          </g>
+        </svg>
+      </div>
+
+      <ul class="rig-list">
+        <li data-part="wheel">
+          <i>01</i><b>Руль MOZA с прямым приводом</b>
+          <span>Мотор передаёт снос, поребрик и вес машины прямо в руки — это не вибромоторчик, а усилие, которое приходится держать</span>
+          <em>модель уточняем у клуба</em>
+        </li>
+        <li data-part="pedals">
+          <i>02</i><b>Педальный узел</b>
+          <span>Тормоз работает от усилия ноги, а не от глубины нажатия — как в настоящей машине</span>
+          <em>тип уточняем у клуба</em>
+        </li>
+        <li data-part="rig">
+          <i>03</i><b>Рама SKILL Racing</b>
+          <span>Профильный кокпит с подсветкой: ничего не гуляет под нагрузкой, посадка одинаковая на первом и на сотом круге</span>
+          <em>с фотографий клуба</em>
+        </li>
+        <li data-part="seat">
+          <i>04</i><b>Ковшеобразное кресло</b>
+          <span>Красный ковш держит корпус в поворотах и регулируется под рост</span>
+          <em>с фотографий клуба</em>
+        </li>
+        <li data-part="screen">
+          <i>05</i><b>Три изогнутых экрана</b>
+          <span>Панорама вокруг головы: соперника видно боковым зрением, а не по стрелке на радаре</span>
+          <em>с фотографий клуба</em>
+        </li>
+        <li data-part="shifter">
+          <i>06</i><b>Секвентальная коробка</b>
+          <span>Рычаг с фиксацией под правой рукой — переключаетесь как в раллийной машине, без подрулевых лепестков</span>
+          <em>с фотографий клуба</em>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ================= Как проходит заезд ================= -->
+  <section class="flow" id="flow">
+    <div class="sec-top">
+      <h2>Как проходит<br>первый заезд</h2>
+      <p>Опыт не нужен. Права не нужны. Нужно прийти и сесть.</p>
+    </div>
+
+    <ol class="steps">
+      <li>
+        <div class="step-no">01</div>
+        <div class="step-body">
+          <h3>Бронь</h3>
+          <p>Пишете в WhatsApp или заполняете форму: дата, время, сколько человек. Ответ приходит в течение нескольких минут.</p>
+          <span class="step-meta">2 минуты</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-no">02</div>
+        <div class="step-body">
+          <h3>Посадка и настройка</h3>
+          <p>Администратор ставит кресло под ваш рост, объясняет педали, руль и помощь на трассе: можно включить автоматическую коробку и подсказку траектории.</p>
+          <span class="step-meta">10 минут</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-no">03</div>
+        <div class="step-body">
+          <h3>Круги</h3>
+          <p>Начинаете с прогревочных, дальше — на время. Трассу выбираете сами: городская, кольцо или классика вроде Спа и Нюрбургринга.</p>
+          <span class="step-meta">от 30 минут</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-no">04</div>
+        <div class="step-body">
+          <h3>Результат</h3>
+          <p>Забираете своё лучшее время круга. Если приехали компанией — сравниваете, кто быстрее, и обычно возвращаетесь отыгрываться.</p>
+          <span class="step-meta">навсегда</span>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ================= Возражения ================= -->
+  <section class="doubts" id="doubts">
+    <div class="sec-top">
+      <h2>«А если я<br>не умею?»</h2>
+      <p>Пять вопросов, которые задают перед первым визитом чаще всего.</p>
+    </div>
+    <div class="doubt-grid">
+      <details open>
+        <summary>Я вообще не играю в гонки. Будет стыдно?</summary>
+        <p>Первые круги все едут медленно — это нормально. Администратор включает автоматическую коробку, подсказку траектории и стабилизацию, а потом убирает их по одной, когда вы освоитесь. Через полчаса вы уже держите машину сами.</p>
+      </details>
+      <details>
+        <summary>Нужны ли права?</summary>
+        <p>Нет. Умение водить помогает, но не обязательно: на симуляторе своя техника торможения и работы с газом, ей учатся с нуля.</p>
+      </details>
+      <details>
+        <summary>Сколько длится заезд?</summary>
+        <p>Минимум — полчаса, этого хватает на разогрев и несколько чистых кругов. Час комфортнее: успеваете попробовать две трассы или разные машины.</p>
+      </details>
+      <details>
+        <summary>Можно вдвоём или компанией?</summary>
+        <p>Да. Пока один за рулём, остальные видят его круг на экране и время в таблице. Компанией обычно берут заезды по очереди и устраивают мини-чемпионат.</p>
+      </details>
+      <details>
+        <summary>Укачивает?</summary>
+        <p>Пост без платформы движения, экран стоит на комфортной дистанции — укачивает крайне редко. Если почувствуете дискомфорт, достаточно сделать паузу и снизить угол обзора в настройках.</p>
+      </details>
+    </div>
+    <p class="disclaimer">Ответы черновые: уточняем у клуба по брифу и заменяем на реальные правила клуба.</p>
+  </section>
+
+  <!-- ================= Отзывы и площадки ================= -->
+  <section class="proof" id="proof">
+    <div class="sec-top">
+      <h2>Что о клубе<br>говорят</h2>
+      <p>Показываем только то, что можно проверить. Тексты живых отзывов добавим, когда клуб пришлёт согласованные скриншоты.</p>
+    </div>
+    <div class="proof-grid">
+      <a class="proof-card" href="https://langame.ru/799449662_computerniy_club_skill-gaming_volgograd" target="_blank" rel="noopener">
+        <span class="proof-val">5.0</span>
+        <span class="proof-lbl">Langame · 4 отзыва</span>
+      </a>
+      <a class="proof-card" href="https://yandex.ru/maps/org/skill_gaming/54139655484/" target="_blank" rel="noopener">
+        <span class="proof-val">24/7</span>
+        <span class="proof-lbl">Яндекс.Карты · карточка клуба</span>
+      </a>
+      <a class="proof-card" href="https://vk.com/skillgaming" target="_blank" rel="noopener">
+        <span class="proof-val">VK</span>
+        <span class="proof-lbl">сообщество клуба</span>
+      </a>
+      <a class="proof-card" href="https://t.me/Top_Skill_Club" target="_blank" rel="noopener">
+        <span class="proof-val">TG</span>
+        <span class="proof-lbl">канал и запись</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ================= Как добраться ================= -->
+  <section class="route">
+    <div class="route-grid">
+      <div>
+        <div class="eyebrow">Как добраться</div>
+        <h2>Краснознаменская, 6<br><em>цокольный этаж</em></h2>
+        <ul class="dashed route-list">
+          <li>Центральный район, в двух шагах от набережной и площади Павших Борцов</li>
+          <li>Вход с улицы, спуск в цоколь — ищите красную подсветку</li>
+          <li>Рядом парковка</li>
+          <li>Работаем круглосуточно, без выходных</li>
+        </ul>
+        <div class="route-links">
+          <a href="https://yandex.ru/maps/org/skill_gaming/54139655484/" target="_blank" rel="noopener">Яндекс.Карты</a>
+          <a href="https://2gis.ru/volgograd/firm/70000001039947001" target="_blank" rel="noopener">2ГИС</a>
+        </div>
+      </div>
+      <div class="route-shot">
+        <img src="img/bar.webp" alt="Стойка администратора Skill Gaming" loading="lazy">
+        <span>Ориентир на входе — стойка администратора</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="strip">
+    <div class="strip-grid">
+      <img src="img/hall.webp" alt="Зал Skill Gaming" loading="lazy">
+      <img src="img/sim.webp" alt="Гоночный симулятор" loading="lazy">
+      <img src="img/gear.webp" alt="Периферия клуба" loading="lazy">
+      <img src="img/bar.webp" alt="Стойка клуба" loading="lazy">
+    </div>
+    <p>Кадры с Яндекс.Карт — временные, заменим на съёмку клуба</p>
+  </section>
+
+  <!-- ================= Бронь ================= -->
+  <section class="booking" id="booking">
+    <div class="book-grid">
+      <div class="book-intro">
+        <div class="eyebrow">Бронь заезда</div>
+        <h2>Занять кокпит<br>на вечер</h2>
+        <p>Заполните — заявка уйдёт администратору в мессенджер, ответ придёт в течение нескольких минут. Клуб работает круглосуточно, бронь можно оставить в любое время.</p>
+        <div class="book-contacts">
+          <a href="tel:88004442634">8 800 444-26-34</a>
+          <a href="https://wa.me/79377074555" target="_blank" rel="noopener">WhatsApp</a>
+          <a href="https://t.me/Top_Skill_Club" target="_blank" rel="noopener">Telegram</a>
+        </div>
+      </div>
+
+      <form class="book-form" id="bookForm" novalidate>
+        <div class="zone-pick" role="radiogroup" aria-label="Зона">
+          <label><input type="radio" name="zone" value="Гоночный симулятор (Racing)" checked><span>Racing</span></label>
+          <label><input type="radio" name="zone" value="Pro-зал"><span>Pro</span></label>
+          <label><input type="radio" name="zone" value="Standart"><span>Standart</span></label>
+          <label><input type="radio" name="zone" value="PlayStation 5"><span>PS5</span></label>
+        </div>
+
+        <div class="row2">
+          <label class="fld"><span>Имя</span><input type="text" name="name" required placeholder="Как к вам обращаться"></label>
+          <label class="fld"><span>Телефон</span><input type="tel" name="phone" required placeholder="+7 ___ ___-__-__" inputmode="tel"></label>
+        </div>
+        <div class="row2">
+          <label class="fld"><span>Дата</span><input type="date" name="date"></label>
+          <label class="fld"><span>Время</span><input type="time" name="time"></label>
+        </div>
+        <div class="row2">
+          <label class="fld"><span>Сколько человек</span><input type="number" name="guests" min="1" max="20" value="1"></label>
+          <label class="fld"><span>Сколько часов</span><input type="number" name="hours" min="1" max="12" value="1"></label>
+        </div>
+        <label class="fld"><span>Комментарий</span><input type="text" name="note" placeholder="Например: первый раз, нужен инструктор"></label>
+
+        <label class="agree">
+          <input type="checkbox" name="agree" required>
+          <span>Согласен на обработку персональных данных и с <a href="privacy.html">политикой конфиденциальности</a></span>
+        </label>
+
+        <button class="btn" type="submit"><span>Отправить заявку</span></button>
+        <p class="form-note" id="formNote">Заявка откроется в WhatsApp с уже заполненным текстом — останется нажать «Отправить».</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ================= Подвал ================= -->
+  <footer id="contacts">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="index.html" aria-label="Skill Gaming — на главную"><img class="mark" src="img/mark.svg" alt="" width="26" height="26">Skill<s>.</s>Gaming</a>
+        <p class="foot-lead">Компьютерный клуб и гоночные симуляторы в центре Волгограда. Круглосуточно, без выходных.</p>
+      </div>
+      <div>
+        <h4>Адрес</h4>
+        <p>Краснознаменская улица, 6<br>цокольный этаж<br>Центральный район, Волгоград</p>
+        <a class="foot-link" href="https://yandex.ru/maps/org/skill_gaming/54139655484/" target="_blank" rel="noopener">Открыть на карте</a>
+      </div>
+      <div>
+        <h4>Связь</h4>
+        <p>
+          <a href="tel:88004442634">8 800 444-26-34</a><br>
+          <a href="https://wa.me/79377074555" target="_blank" rel="noopener">WhatsApp</a><br>
+          <a href="https://t.me/Top_Skill_Club" target="_blank" rel="noopener">Telegram</a><br>
+          <a href="mailto:topskillclub@mail.ru">topskillclub@mail.ru</a>
+        </p>
+      </div>
+      <div>
+        <h4>Режим</h4>
+        <p>Круглосуточно<br>7 дней в неделю</p>
+        <p class="foot-small">Оплата: карта, наличные, СБП</p>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Skill Gaming</span>
+      <span class="foot-small">Реквизиты и политика конфиденциальности — после ответов клуба на бриф</span>
+    </div>
+  </footer>
+
+</main>
+
+<script src="js/site.js" defer></script>
+</body>
+</html>

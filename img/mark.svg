@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Skill Gaming">
+  <defs>
+    <radialGradient id="sg" cx="40%" cy="32%" r="74%">
+      <stop offset="0%" stop-color="#FF2F22"/>
+      <stop offset="52%" stop-color="#D7261E"/>
+      <stop offset="100%" stop-color="#8C110B"/>
+    </radialGradient>
+  </defs>
+
+  <circle cx="100" cy="100" r="94" fill="#0B0D10"/>
+  <circle cx="100" cy="100" r="84" fill="url(#sg)"/>
+
+  <!-- глаза: перекрещенные дуги, у правого — кольцо -->
+  <g fill="none" stroke="#0B0D10" stroke-width="7" stroke-linecap="round">
+    <path d="M48 44 C 60 68, 72 92, 86 114"/>
+    <path d="M88 44 C 76 68, 64 92, 50 114"/>
+    <path d="M112 44 C 124 68, 136 92, 150 114"/>
+    <path d="M152 44 C 140 68, 128 92, 114 114"/>
+    <circle cx="131" cy="79" r="21"/>
+  </g>
+
+  <!-- ухмылка лентой -->
+  <path d="M43 130 C 62 160, 138 160, 157 130 C 140 146, 60 146, 43 130 Z" fill="#0B0D10"/>
+  <!-- стежки поперёк, торчат выше и ниже ленты -->
+  <g stroke="#0B0D10" stroke-width="6" stroke-linecap="round">
+    <path d="M55 128 L52 141 M74 138 L71 152 M100 142 L100 157 M126 138 L129 152 M145 128 L148 141"/>
+  </g>
+  <!-- красные разрезы между зубами -->
+  <g stroke="#D7261E" stroke-width="4" stroke-linecap="butt">
+    <path d="M64 137 L63 147 M87 142 L86 152 M113 142 L114 152 M136 137 L137 147"/>
+  </g>
+</svg>
