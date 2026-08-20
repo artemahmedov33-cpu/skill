@@ -51,13 +51,14 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const ARC = fill.getTotalLength();
   live.style.strokeDasharray = '58 ' + LEN;   // короткий след за машиной
 
-  let pos = 0, rpm = .18, target = .18, lastY = scrollY, lapT = 98.42;
+  const IDLE = 900 / 8200;            // холостой ход — 900 об/мин
+  let pos = 0, rpm = IDLE, target = IDLE, lastY = scrollY, lapT = 98.42;
 
   const rpmBox = document.querySelector('.rpm');
   const hero = document.querySelector('.hero');
   addEventListener('scroll', () => {
     const d = Math.abs(scrollY - lastY); lastY = scrollY;
-    target = Math.min(1, .18 + d / 42);
+    target = Math.min(1, IDLE + d / 42);
     if (rpmBox && hero) rpmBox.classList.toggle('docked', scrollY > hero.offsetHeight * 0.72);
   }, { passive: true });
 
@@ -66,14 +67,15 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   });
 
   function frame() {
-    target += (0.16 - target) * 0.03;
+    const idleNow = IDLE + Math.sin(performance.now() / 640) * 0.004;  // мотор «дышит»
+    target += (idleNow - target) * 0.03;
     rpm += (target - rpm) * 0.09;
 
     needle.setAttribute('transform', 'rotate(' + (-135 + rpm * 270) + ' 50 50)');
     const doc = document.documentElement;
     const progress = Math.min(1, scrollY / Math.max(1, doc.scrollHeight - innerHeight));
     fill.setAttribute('stroke-dasharray', (ARC * progress).toFixed(1) + ' ' + ARC);
-    rpmval.textContent = String(Math.round(rpm * 8200)).padStart(4, '0');
+    rpmval.textContent = String(Math.round(rpm * 8200 / 10) * 10);
 
     pos = (pos + 0.6 + rpm * 5.2) % LEN;
     const pt = track.getPointAtLength(pos);
@@ -88,7 +90,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     requestAnimationFrame(frame);
   }
   if (!reduce) frame();
-  else { needle.setAttribute('transform', 'rotate(-40 50 50)'); rpmval.textContent = '2600'; }
+  else { needle.setAttribute('transform', 'rotate(-105 50 50)'); rpmval.textContent = '900'; }
 })();
 
 /* ---------- Появление карточек ---------- */
@@ -123,7 +125,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   function tick() {
     const r = list.getBoundingClientRect();
     const seen = Math.min(1, Math.max(0, (innerHeight * .72 - r.top) / r.height));
-    list.style.setProperty('--flow', (seen * 100).toFixed(1) + '%');
+    list.style.setProperty('--flow', seen.toFixed(3));
     items.forEach(li => li.classList.toggle('done', li.getBoundingClientRect().top < innerHeight * .72));
   }
   addEventListener('scroll', tick, { passive: true });
@@ -227,11 +229,13 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   probe.src = 'img/mark.svg';
   addEventListener('mouseleave', () => { c.style.opacity = '0'; });
   addEventListener('mouseenter', () => { c.style.opacity = '1'; });
-  let x = innerWidth / 2, y = innerHeight / 2, tx = x, ty = y;
+  let x = innerWidth / 2, y = innerHeight / 2, tx = x, ty = y, k = 1, tk = 1;
   addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; }, { passive: true });
   (function loop() {
     x += (tx - x) * .18; y += (ty - y) * .18;
-    c.style.transform = 'translate(' + x + 'px,' + y + 'px) translate(-50%,-50%)';
+    tk = c.classList.contains('big') ? 1.9 : 1;
+    k += (tk - k) * .16;
+    c.style.transform = 'translate(' + x + 'px,' + y + 'px) translate(-50%,-50%) scale(' + k.toFixed(3) + ')';
     requestAnimationFrame(loop);
   })();
   document.querySelectorAll('a,button,.card').forEach(el => {

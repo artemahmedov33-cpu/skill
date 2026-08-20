@@ -328,16 +328,20 @@ h1 em{font-style:normal;color:var(--red-hot)}
 
 .rig-list{list-style:none;margin:0;padding:0;display:grid}
 .rig-list li{
-  padding:20px 0 20px 22px;border-top:1px solid var(--concrete-500);
-  position:relative;transition:padding-left .3s var(--ease-out);
+  padding:20px 0 20px 34px;border-top:1px solid var(--concrete-500);
+  position:relative;
 }
 .rig-list li:last-child{border-bottom:1px solid var(--concrete-500)}
 .rig-list li::before{
-  content:"";position:absolute;left:0;top:26px;width:8px;height:1px;background:var(--concrete-300);
-  transition:width .3s var(--ease-out),background .3s;
+  content:"";position:absolute;left:0;top:26px;width:22px;height:1px;background:var(--concrete-300);
+  transform:scaleX(.36);transform-origin:left;
+  transition:transform .3s var(--ease-out),background .3s;
 }
-.rig-list li:hover{padding-left:34px}
-.rig-list li:hover::before{width:22px;background:var(--red)}
+.rig-list li>i,.rig-list li>b,.rig-list li>span,.rig-list li>em{
+  transform:translateX(-12px);transition:transform .3s var(--ease-out),color .3s;
+}
+.rig-list li:hover>i,.rig-list li:hover>b,.rig-list li:hover>span,.rig-list li:hover>em{transform:none}
+.rig-list li:hover::before{transform:scaleX(1);background:var(--red)}
 .rig-list i{
   font-style:normal;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;
   color:var(--concrete-300);display:block;margin-bottom:8px;transition:color .3s;
@@ -359,7 +363,8 @@ h1 em{font-style:normal;color:var(--red-hot)}
 .steps::before{content:"";position:absolute;left:7px;top:14px;bottom:40px;width:1px;background:var(--concrete-500)}
 .steps::after{
   content:"";position:absolute;left:7px;top:14px;width:1px;background:var(--red);
-  height:var(--flow,0%);max-height:calc(100% - 54px);transition:height .2s linear;
+  height:calc(100% - 54px);transform:scaleY(var(--flow,0));transform-origin:top;
+  transition:transform .2s linear;
 }
 .steps li{
   display:grid;grid-template-columns:60px minmax(0,1fr);gap:clamp(16px,3vw,48px);
@@ -654,10 +659,10 @@ ul.dashed li{
 .cursor{
   position:fixed;top:0;left:0;width:24px;height:24px;pointer-events:none;z-index:150;
   background:url("../img/mark.svg") center/contain no-repeat;
-  transform:translate(-50%,-50%);
-  transition:width .22s var(--ease-out),height .22s var(--ease-out),opacity .2s;
+  transform:translate(-50%,-50%);will-change:transform;
+  transition:opacity .2s;
 }
-.cursor.big{width:46px;height:46px}
+
 /* пока рисуем свой курсор — системный не показываем нигде */
 .has-cursor,.has-cursor *{cursor:none!important}
 
@@ -754,7 +759,8 @@ footer .logo .mark{width:30px;height:30px}
 
 
 /* ================= Тахометр в углу ================= */
-.rpm{transition:width .45s var(--ease-race),right .45s var(--ease-race),bottom .45s var(--ease-race)}
+.rpm.docked{animation:dock .35s var(--ease-out)}
+@keyframes dock{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .rpm.docked{
   position:fixed;right:clamp(14px,2vw,28px);bottom:clamp(14px,2vw,28px);
   width:96px;max-width:96px;height:96px;z-index:70;cursor:pointer;
@@ -772,7 +778,7 @@ footer .logo .mark{width:30px;height:30px}
   .rpm.docked{width:64px;max-width:64px;height:64px}
   .rpm.docked .rpm-val{font-size:11px}
 }
-@media (prefers-reduced-motion:reduce){.rpm{transition:none}}
+@media (prefers-reduced-motion:reduce){.rpm.docked{animation:none}}
 
 
 /* ================= Мобильные правки ================= */
@@ -871,8 +877,9 @@ h1,h2,h3,.logo{overflow-wrap:break-word}
     display:flex;align-items:center;gap:10px;
     position:fixed;left:0;right:0;bottom:0;z-index:75;
     padding:10px 12px calc(10px + env(safe-area-inset-bottom));
-    background:rgba(11,13,16,.94);backdrop-filter:blur(12px);
+    background:#0B0D10;
     border-top:1px solid var(--concrete-500);
+    box-shadow:0 -14px 24px rgba(11,13,16,.9);
   }
   .mbar-btn{
     flex:1;display:flex;align-items:center;justify-content:center;
@@ -892,4 +899,18 @@ h1,h2,h3,.logo{overflow-wrap:break-word}
   .rpm.docked .rpm-val{font-size:14px}
   .rpm.docked .rpm-lbl{font-size:7px}
   .mbar-btn{margin-right:62px}
+}
+
+
+/* ================= Внутренние ссылки в тексте ================= */
+.ilink{
+  color:var(--white);text-decoration:none;
+  border-bottom:1px solid var(--red);padding-bottom:1px;
+  transition:color .25s,border-color .25s;
+}
+.ilink:hover{color:var(--red-hot);border-bottom-color:var(--red-hot)}
+.card li a.ilink{color:var(--concrete-100)}
+.card li a.ilink:hover{color:var(--white)}
+.after-rates{
+  margin:14px 0 0;color:var(--concrete-300);font-size:14px;max-width:70ch;
 }
