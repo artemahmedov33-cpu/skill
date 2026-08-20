@@ -773,3 +773,61 @@ footer .logo .mark{width:30px;height:30px}
   .rpm.docked .rpm-val{font-size:11px}
 }
 @media (prefers-reduced-motion:reduce){.rpm{transition:none}}
+
+
+/* ================= Мобильные правки ================= */
+@media (max-width:1000px){
+  header{gap:12px;padding:14px clamp(14px,4vw,54px)}
+  .tel{white-space:nowrap;font-size:12px;letter-spacing:0}
+  .logo{font-size:14px;gap:8px}
+  .logo .mark{width:22px;height:22px}
+  .burger{width:38px;height:32px}
+  .burger i{left:9px;right:9px}
+  nav{inset:52px 0 auto}
+}
+@media (max-width:430px){
+  .tel{font-size:11.5px}
+  .logo{font-size:13px}
+}
+/* на телефоне тахометр в углу только мешает */
+@media (max-width:760px){
+  .rpm.docked{display:none}
+}
+
+
+/* ================= Оценки и отзывы ================= */
+.reviews{padding:clamp(50px,8vw,110px) clamp(18px,4vw,54px);border-top:1px solid var(--concrete-500)}
+.score-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--concrete-500);margin-bottom:clamp(24px,4vw,48px)}
+.score{
+  background:var(--graphite-800);padding:28px 26px 26px;text-decoration:none;
+  display:flex;flex-direction:column;gap:8px;transition:background .35s var(--ease-out);
+}
+a.score:hover{background:var(--graphite-700)}
+.score-val{
+  font-family:var(--font-display);font-weight:800;font-size:clamp(34px,5vw,52px);
+  letter-spacing:-.03em;color:var(--white);line-height:1;font-variant-numeric:tabular-nums;
+}
+a.score:hover .score-val{color:var(--red-hot)}
+.score-src{
+  font-family:var(--font-display);font-weight:600;font-size:14px;text-transform:uppercase;
+  letter-spacing:.04em;color:var(--concrete-100);
+}
+.score-cnt{
+  font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--concrete-300);
+}
+
+.quotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.quotes figure{
+  margin:0;border-left:2px solid var(--red);padding:4px 0 4px 20px;
+  display:flex;flex-direction:column;gap:14px;
+}
+.quotes blockquote{
+  margin:0;color:var(--concrete-100);font-size:15px;line-height:1.6;
+}
+.quotes blockquote::before{content:"«"}
+.quotes blockquote::after{content:"»"}
+.quotes figcaption{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--concrete-300);margin-top:auto;
+}
