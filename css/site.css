@@ -831,3 +831,30 @@ a.score:hover .score-val{color:var(--red-hot)}
   font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--concrete-300);margin-top:auto;
 }
+
+
+/* на телефоне сцена с трассой и приборами не показывается */
+@media (max-width:1000px){
+  .scene{display:none}
+  .hero{padding-bottom:40px}
+}
+
+
+/* ================= Узкие экраны: ничего не распирает страницу ================= */
+h1,h2,h3,.logo{overflow-wrap:break-word}
+.route-grid>*,.rig-grid>*,.book-grid>*,.cards>*,.hall-grid>*,
+.feel-grid>*,.fmt-grid>*,.track-cols>*,.proof-grid>*,.score-row>*,.quotes>*{min-width:0}
+
+@media (max-width:430px){
+  h1{font-size:clamp(26px,8.4vw,36px)}
+  .page-hero h1{font-size:clamp(26px,8.4vw,36px)}
+  .sec-top h2,.route h2,.book-intro h2,.cta-band h2{font-size:clamp(21px,6.6vw,30px)}
+  .tel{font-size:11px}
+  .eyebrow{letter-spacing:.14em}
+  .steps li{grid-template-columns:1fr}
+}
+@media (max-width:340px){
+  .tel{font-size:10px}
+  .logo{font-size:12px;gap:6px}
+  .logo .mark{width:20px;height:20px}
+}
