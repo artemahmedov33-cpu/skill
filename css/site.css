@@ -759,7 +759,7 @@ footer .logo .mark{width:30px;height:30px}
   position:fixed;right:clamp(14px,2vw,28px);bottom:clamp(14px,2vw,28px);
   width:96px;max-width:96px;height:96px;z-index:70;cursor:pointer;
 }
-.rpm.docked .rpm-bg{fill:rgba(11,13,16,.92);stroke:var(--concrete-500)}
+.rpm.docked .rpm-bg{fill:#0B0D10;stroke:var(--concrete-500);stroke-width:1.5}
 .rpm.docked:hover .rpm-bg{stroke:var(--red)}
 .rpm-hint{
   font-family:var(--font-mono);font-size:7px;letter-spacing:.18em;fill:var(--white);
@@ -789,9 +789,10 @@ footer .logo .mark{width:30px;height:30px}
   .tel{font-size:11.5px}
   .logo{font-size:13px}
 }
-/* на телефоне тахометр в углу только мешает */
 @media (max-width:760px){
-  .rpm.docked{display:none}
+  .rpm.docked{width:58px;max-width:58px;height:58px;right:12px;bottom:12px}
+  .rpm.docked .rpm-val{font-size:15px}
+  .rpm.docked .rpm-lbl{font-size:8px}
 }
 
 
@@ -833,9 +834,12 @@ a.score:hover .score-val{color:var(--red-hot)}
 }
 
 
-/* на телефоне сцена с трассой и приборами не показывается */
+/* на телефоне убираем трассу и телеметрию, тахометр остаётся плавающим в углу */
 @media (max-width:1000px){
-  .scene{display:none}
+  .scene{height:0;min-height:0;margin:0;padding:0;aspect-ratio:auto;overflow:visible}
+  .scene > svg[aria-label="Схема трассы"],.hud{display:none}
+  .rpm{display:none}
+  .rpm.docked{display:block}
   .hero{padding-bottom:40px}
 }
 
@@ -857,4 +861,35 @@ h1,h2,h3,.logo{overflow-wrap:break-word}
   .tel{font-size:10px}
   .logo{font-size:12px;gap:6px}
   .logo .mark{width:20px;height:20px}
+}
+
+
+/* ================= Нижняя панель на телефоне ================= */
+.mbar{display:none}
+@media (max-width:1000px){
+  .mbar{
+    display:flex;align-items:center;gap:10px;
+    position:fixed;left:0;right:0;bottom:0;z-index:75;
+    padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+    background:rgba(11,13,16,.94);backdrop-filter:blur(12px);
+    border-top:1px solid var(--concrete-500);
+  }
+  .mbar-btn{
+    flex:1;display:flex;align-items:center;justify-content:center;
+    padding:14px 18px;background:var(--red);color:#fff;text-decoration:none;
+    font-family:var(--font-display);font-weight:600;font-size:12.5px;
+    letter-spacing:.08em;text-transform:uppercase;
+  }
+  .mbar-btn:active{background:var(--red-hot)}
+  /* контент заканчивается выше панели, текст под неё не заходит */
+  body{padding-bottom:78px}
+  footer{padding-bottom:18px}
+  /* тахометр садится в панель, а не поверх текста */
+  .rpm.docked{
+    right:12px;bottom:calc(12px + env(safe-area-inset-bottom));
+    width:52px;max-width:52px;height:52px;z-index:80;
+  }
+  .rpm.docked .rpm-val{font-size:14px}
+  .rpm.docked .rpm-lbl{font-size:7px}
+  .mbar-btn{margin-right:62px}
 }

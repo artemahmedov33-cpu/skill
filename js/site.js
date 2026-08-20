@@ -25,11 +25,6 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 (function () {
   const track = document.getElementById('track');
   if (!track) return;
-  const narrow = matchMedia('(max-width:1000px)');
-  if (narrow.matches) {                       // сцена скрыта — не тратим кадры и батарею
-    narrow.addEventListener('change', e => { if (!e.matches) location.reload(); });
-    return;
-  }
   const live = document.getElementById('live');
   const car = document.getElementById('car');
   const needle = document.getElementById('needle');
