@@ -991,3 +991,42 @@ h1,h2,h3,.logo{overflow-wrap:break-word}
 @media (max-width:380px){
   .page-hero h1{font-size:clamp(19px,6.2vw,26px)}
 }
+
+
+/* ================= Читаемость мелких подписей ================= */
+/* моно-текст мельче 11px с широкой разрядкой на тёмном фоне читается плохо:
+   поднимаем кегль, сужаем трекинг, убираем полупрозрачность */
+.eyebrow{font-size:12px;letter-spacing:.12em}
+.card .no,.feel-grid .no{font-size:12px;letter-spacing:.14em;color:var(--concrete-100)}
+.specs span,.pc-extra span,.hall-price span,.price span{font-size:11.5px;letter-spacing:.1em}
+.price u,.draft{font-size:11.5px;letter-spacing:.06em;color:var(--red-hot)}
+.disclaimer{font-size:11.5px;letter-spacing:.06em;opacity:1}
+.hint,.fmt-note,.rig-list em{font-size:11px;letter-spacing:.06em;opacity:1}
+.rig-list em{color:var(--red-hot)}
+.hint{color:var(--concrete-100)}
+.rig-list i{font-size:11.5px;letter-spacing:.1em}
+.step-meta{font-size:11.5px;letter-spacing:.08em}
+.step-no{font-size:12px;letter-spacing:.12em}
+.score-cnt,.proof-lbl{font-size:11.5px;letter-spacing:.08em;color:var(--concrete-100)}
+.quotes figcaption{font-size:11px;letter-spacing:.08em}
+.rates-live{font-size:11.5px;letter-spacing:.1em}
+.cashback{font-size:11.5px;letter-spacing:.08em}
+.pz-head em{font-size:11.5px;letter-spacing:.1em;color:var(--concrete-100)}
+.fld span{font-size:11.5px;letter-spacing:.1em;color:var(--concrete-100)}
+.form-note{font-size:11.5px;letter-spacing:.06em}
+.zone-pick span{font-size:12.5px;letter-spacing:.06em}
+.strip p,.shot p,.route-shot span{font-size:11.5px;letter-spacing:.08em;color:var(--concrete-100)}
+.foot-small,.foot-bottom{font-size:12px;letter-spacing:.05em}
+.track-cols h4,footer h4{font-size:11.5px;letter-spacing:.12em}
+.mark-nav,.tel{letter-spacing:.02em}
+.route-links a{font-size:13px;letter-spacing:.05em}
+.foot-link{font-size:13px}
+.bp-num{font-size:12px}
+.bp-dim text{font-size:11px;letter-spacing:.1em}
+.sector{font-size:10px;letter-spacing:.1em}
+.hud{font-size:12px;letter-spacing:.06em}
+.rpm-lbl{font-size:8px;letter-spacing:.14em}
+@media (max-width:520px){
+  .eyebrow{font-size:11.5px;letter-spacing:.08em}
+  .disclaimer,.draft,.hint,.fmt-note,.rig-list em{letter-spacing:.04em}
+}
