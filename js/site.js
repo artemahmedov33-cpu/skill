@@ -301,3 +301,19 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   }), { threshold: .35 });
   rows.forEach(r => io.observe(r));
 })();
+
+/* ---------- Прайс-аккордеон: тап на тач-экранах ---------- */
+(function () {
+  const rows = [...document.querySelectorAll('.pz-row')];
+  if (!rows.length) return;
+  rows.forEach(row => {
+    const head = row.querySelector('.pz-head');
+    head.addEventListener('click', () => {
+      const open = !row.classList.contains('open');
+      rows.forEach(r => {
+        r.classList.toggle('open', r === row && open);
+        r.querySelector('.pz-head').setAttribute('aria-expanded', r === row && open ? 'true' : 'false');
+      });
+    });
+  });
+})();

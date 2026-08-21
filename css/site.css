@@ -690,8 +690,8 @@ ul.dashed li{
 }
 @media (max-width:900px){
   .rig-grid{grid-template-columns:1fr}
-  .steps li{grid-template-columns:1fr;gap:10px}
-  .step-no{padding-left:28px}
+  .steps li{grid-template-columns:1fr;gap:6px;padding-left:30px}
+  .step-no{padding-left:0}
   .step-body{grid-template-columns:1fr}
   .step-meta{grid-column:1;grid-row:auto;padding-top:2px}
   .book-grid{grid-template-columns:1fr}
@@ -861,7 +861,7 @@ h1,h2,h3,.logo{overflow-wrap:break-word}
   .sec-top h2,.route h2,.book-intro h2,.cta-band h2{font-size:clamp(21px,6.6vw,30px)}
   .tel{font-size:11px}
   .eyebrow{letter-spacing:.14em}
-  .steps li{grid-template-columns:1fr}
+  .steps li{grid-template-columns:1fr;padding-left:30px}
 }
 @media (max-width:340px){
   .tel{font-size:10px}
@@ -913,4 +913,63 @@ h1,h2,h3,.logo{overflow-wrap:break-word}
 .card li a.ilink:hover{color:var(--white)}
 .after-rates{
   margin:14px 0 0;color:var(--concrete-300);font-size:14px;max-width:70ch;
+}
+
+
+/* ================= Прайс-аккордеон ================= */
+.pz{border-top:1px solid var(--concrete-500);max-width:820px}
+.pz-row{border-bottom:1px solid var(--concrete-500)}
+.pz-head{
+  width:100%;background:none;border:0;cursor:pointer;text-align:left;
+  display:flex;align-items:baseline;gap:12px;padding:18px 40px 18px 0;position:relative;
+  transition:color .25s;
+}
+.pz-head b{
+  font-family:var(--font-display);font-weight:600;font-size:clamp(15px,1.9vw,19px);
+  text-transform:uppercase;letter-spacing:-.005em;
+}
+.pz-head em{
+  font-style:normal;font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--concrete-300);
+}
+.pz-head i{
+  font-style:normal;margin-left:auto;font-family:var(--font-display);font-weight:800;
+  font-size:clamp(17px,2.2vw,22px);letter-spacing:-.01em;font-variant-numeric:tabular-nums;
+  transition:color .25s;
+}
+.pz-head::after{
+  content:"";position:absolute;right:8px;top:50%;width:10px;height:10px;margin-top:-7px;
+  border-right:1.5px solid var(--concrete-300);border-bottom:1.5px solid var(--concrete-300);
+  transform:rotate(45deg);transition:transform .35s var(--ease-out),border-color .25s;
+}
+.pz-body{
+  display:grid;grid-template-rows:0fr;
+  transition:grid-template-rows .4s var(--ease-out);
+}
+.pz-body>ul{
+  overflow:hidden;list-style:none;margin:0;padding:0;
+}
+.pz-body li{
+  display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+  padding:9px 0;font-size:15px;
+}
+.pz-body li:last-child{padding-bottom:20px}
+.pz-body li span{color:var(--concrete-300)}
+.pz-body li b{
+  font-family:var(--font-mono);font-weight:400;font-size:15px;color:var(--white);
+  font-variant-numeric:tabular-nums;
+}
+
+/* раскрытое состояние — на мышке по наведению, на тач-экране по тапу */
+.pz-row.open>.pz-body{grid-template-rows:1fr}
+.pz-row.open>.pz-head{color:var(--white)}
+.pz-row.open>.pz-head i{color:var(--red-hot)}
+.pz-row.open>.pz-head::after{transform:rotate(225deg);border-color:var(--red)}
+@media (hover:hover){
+  .pz-row:hover>.pz-body{grid-template-rows:1fr}
+  .pz-row:hover>.pz-head i{color:var(--red-hot)}
+  .pz-row:hover>.pz-head::after{transform:rotate(225deg);border-color:var(--red)}
+}
+@media (prefers-reduced-motion:reduce){
+  .pz-body{transition:none}
 }
