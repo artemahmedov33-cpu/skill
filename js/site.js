@@ -21,19 +21,34 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   addEventListener('scroll', () => hdr.classList.toggle('stuck', scrollY > 40), { passive: true });
 })();
 
-/* ---------- Тахометр и машина: живут от скорости скролла ---------- */
+/* ---------- Тахометр: общий для всех страниц ---------- */
 (function () {
-  const track = document.getElementById('track');
-  if (!track) return;
-  const live = document.getElementById('live');
-  const car = document.getElementById('car');
-  const needle = document.getElementById('needle');
-  const rpmval = document.getElementById('rpmval');
-  const fill = document.getElementById('rpmfill');
-  const spd = document.getElementById('spd');
-  const gear = document.getElementById('gear');
-  const lap = document.getElementById('lap');
-  const ticksBox = document.getElementById('ticks');
+  if (reduce) return;
+
+  // на внутренних страницах прибора в разметке нет — создаём его сами
+  let box = document.querySelector('.rpm');
+  if (!box) {
+    box = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    box.setAttribute('class', 'rpm');
+    box.setAttribute('viewBox', '0 0 100 100');
+    box.setAttribute('aria-label', 'Тахометр');
+    box.innerHTML =
+      '<circle class="rpm-bg" cx="50" cy="50" r="49"/>' +
+      '<path class="rpm-arc" d="M18 78 A 42 42 0 1 1 82 78"/>' +
+      '<path class="rpm-fill" id="rpmfill" d="M18 78 A 42 42 0 1 1 82 78" stroke-dasharray="0 400"/>' +
+      '<g id="ticks"></g>' +
+      '<line class="rpm-needle" id="needle" x1="50" y1="50" x2="50" y2="18"/>' +
+      '<circle cx="50" cy="50" r="3.5" fill="var(--white)"/>' +
+      '<text class="rpm-val" x="50" y="90" id="rpmval">900</text>' +
+      '<text class="rpm-lbl" x="50" y="97">RPM</text>' +
+      '<text class="rpm-hint" x="50" y="66">НАВЕРХ</text>';
+    (document.querySelector('main') || document.body).append(box);
+  }
+
+  const needle = box.querySelector('#needle');
+  const rpmval = box.querySelector('#rpmval');
+  const fill = box.querySelector('#rpmfill');
+  const ticksBox = box.querySelector('#ticks');
 
   for (let i = 0; i <= 8; i++) {
     const a = (-225 + i * (270 / 8)) * Math.PI / 180;
@@ -47,27 +62,31 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     ticksBox.append(l);
   }
 
-  const LEN = track.getTotalLength();
   const ARC = fill.getTotalLength();
-  live.style.strokeDasharray = '58 ' + LEN;   // короткий след за машиной
+  const IDLE = 900 / 8200;                 // холостой ход
+  let rpm = IDLE, target = IDLE, lastY = scrollY;
 
-  const IDLE = 900 / 8200;            // холостой ход — 900 об/мин
-  let pos = 0, rpm = IDLE, target = IDLE, lastY = scrollY, lapT = 98.42;
+  // трасса есть только на главной — она живёт от тех же оборотов
+  const track = document.getElementById('track');
+  const live = document.getElementById('live');
+  const car = document.getElementById('car');
+  const spd = document.getElementById('spd');
+  const gear = document.getElementById('gear');
+  const lap = document.getElementById('lap');
+  const LEN = track ? track.getTotalLength() : 0;
+  let pos = 0, lapT = 98.42;
+  if (track) live.style.strokeDasharray = '58 ' + LEN;
 
-  const rpmBox = document.querySelector('.rpm');
-  const hero = document.querySelector('.hero');
   addEventListener('scroll', () => {
     const d = Math.abs(scrollY - lastY); lastY = scrollY;
     target = Math.min(1, IDLE + d / 42);
-    if (rpmBox && hero) rpmBox.classList.toggle('docked', scrollY > hero.offsetHeight * 0.72);
   }, { passive: true });
 
-  if (rpmBox) rpmBox.addEventListener('click', () => {
-    if (rpmBox.classList.contains('docked')) scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  box.classList.add('docked');            // прибор виден сразу, на всех страницах
+  box.addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
 
   function frame() {
-    const idleNow = IDLE + Math.sin(performance.now() / 640) * 0.004;  // мотор «дышит»
+    const idleNow = IDLE + Math.sin(performance.now() / 640) * 0.004;
     target += (idleNow - target) * 0.03;
     rpm += (target - rpm) * 0.09;
 
@@ -77,20 +96,19 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     fill.setAttribute('stroke-dasharray', (ARC * progress).toFixed(1) + ' ' + ARC);
     rpmval.textContent = String(Math.round(rpm * 8200 / 10) * 10);
 
-    pos = (pos + 0.6 + rpm * 5.2) % LEN;
-    const pt = track.getPointAtLength(pos);
-    car.setAttribute('cx', pt.x); car.setAttribute('cy', pt.y);
-    live.style.strokeDashoffset = LEN - pos;
-
-    spd.textContent = Math.round(60 + rpm * 260);
-    gear.textContent = Math.max(1, Math.ceil(rpm * 6));
-    if (pos < 6) lapT = 92 + Math.random() * 12;
-    lap.textContent = Math.floor(lapT / 60) + ':' + (lapT % 60).toFixed(2).padStart(5, '0');
-
+    if (track) {
+      pos = (pos + 0.6 + rpm * 5.2) % LEN;
+      const pt = track.getPointAtLength(pos);
+      car.setAttribute('cx', pt.x); car.setAttribute('cy', pt.y);
+      live.style.strokeDashoffset = LEN - pos;
+      spd.textContent = Math.round(60 + rpm * 260);
+      gear.textContent = Math.max(1, Math.ceil(rpm * 6));
+      if (pos < 6) lapT = 92 + Math.random() * 12;
+      lap.textContent = Math.floor(lapT / 60) + ':' + (lapT % 60).toFixed(2).padStart(5, '0');
+    }
     requestAnimationFrame(frame);
   }
-  if (!reduce) frame();
-  else { needle.setAttribute('transform', 'rotate(-105 50 50)'); rpmval.textContent = '900'; }
+  frame();
 })();
 
 /* ---------- Появление карточек ---------- */

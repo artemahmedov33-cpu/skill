@@ -1229,3 +1229,9 @@ h1,h2,h3,.logo{overflow-wrap:break-word}
   nav a i{display:none}
   .nav-foot{display:none}
 }
+
+
+/* ================= Тахометр на внутренних страницах ================= */
+/* на страницах без сцены прибор создаётся скриптом и живёт только в углу */
+main > svg.rpm{position:fixed;display:none}
+main > svg.rpm.docked{display:block}
