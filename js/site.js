@@ -304,15 +304,16 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- Прайс-аккордеон: тап на тач-экранах ---------- */
 (function () {
-  const rows = [...document.querySelectorAll('.pz-row')];
-  if (!rows.length) return;
-  rows.forEach(row => {
-    const head = row.querySelector('.pz-head');
-    head.addEventListener('click', () => {
-      const open = !row.classList.contains('open');
-      rows.forEach(r => {
-        r.classList.toggle('open', r === row && open);
-        r.querySelector('.pz-head').setAttribute('aria-expanded', r === row && open ? 'true' : 'false');
+  document.querySelectorAll('.pz').forEach(group => {
+    const rows = [...group.querySelectorAll('.pz-row')];
+    rows.forEach(row => {
+      row.querySelector('.pz-head').addEventListener('click', () => {
+        const open = !row.classList.contains('open');
+        rows.forEach(r => {
+          const on = r === row && open;
+          r.classList.toggle('open', on);
+          r.querySelector('.pz-head').setAttribute('aria-expanded', on ? 'true' : 'false');
+        });
       });
     });
   });

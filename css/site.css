@@ -845,13 +845,27 @@ a.score:hover .score-val{color:var(--red-hot)}
 }
 
 
-/* на телефоне убираем трассу и телеметрию, тахометр остаётся плавающим в углу */
+/* на телефоне трасса компактная, телеметрия строкой, тахометр живёт в нижней панели */
 @media (max-width:1000px){
-  .scene{height:0;min-height:0;margin:0;padding:0;aspect-ratio:auto;overflow:visible}
-  .scene > svg[aria-label="Схема трассы"],.hud{display:none}
+  .scene{
+    position:relative;height:auto;aspect-ratio:1.08/1;max-height:46vh;
+    margin:10px 0 0;overflow:visible;
+  }
+  .scene > svg[aria-label="Схема трассы"]{display:block;height:100%}
+  .hud{
+    position:static;display:grid;grid-template-columns:repeat(3,auto);
+    justify-content:start;gap:6px 22px;margin:0 0 10px;
+  }
+  .hud div{gap:8px}
+  .hud b{font-size:14px}
   .rpm{display:none}
   .rpm.docked{display:block}
-  .hero{padding-bottom:40px}
+  .hero{padding-bottom:34px}
+  .sector{font-size:9px}
+}
+@media (max-width:520px){
+  .scene{aspect-ratio:1.05/1;max-height:40vh}
+  .hud{gap:4px 16px;font-size:11px}
 }
 
 
@@ -951,9 +965,8 @@ h1,h2,h3,.logo{overflow-wrap:break-word}
   display:grid;grid-template-rows:0fr;
   transition:grid-template-rows .4s var(--ease-out);
 }
-.pz-body>ul{
-  overflow:hidden;list-style:none;margin:0;padding:0;
-}
+.pz-body>ul,.pz-body>div{overflow:hidden}
+.pz-body>ul{list-style:none;margin:0;padding:0}
 .pz-body li{
   display:flex;justify-content:space-between;align-items:baseline;gap:16px;
   padding:9px 0;font-size:15px;
@@ -990,6 +1003,8 @@ h1,h2,h3,.logo{overflow-wrap:break-word}
 }
 @media (max-width:380px){
   .page-hero h1{font-size:clamp(19px,6.2vw,26px)}
+  .eyebrow{font-size:10.5px;letter-spacing:.05em}
+  .hud{font-size:10.5px;gap:3px 12px}
 }
 
 
@@ -1029,4 +1044,15 @@ h1,h2,h3,.logo{overflow-wrap:break-word}
 @media (max-width:520px){
   .eyebrow{font-size:11.5px;letter-spacing:.08em}
   .disclaimer,.draft,.hint,.fmt-note,.rig-list em{letter-spacing:.04em}
+}
+
+
+/* ================= Вопросы: тот же аккордеон, что и в прайсе ================= */
+.doubt-grid.pz{max-width:none}
+.doubt-grid .pz-head b{
+  font-family:var(--font-display);font-weight:600;font-size:clamp(15px,1.7vw,19px);
+  text-transform:uppercase;letter-spacing:-.005em;
+}
+.doubt-grid .pz-body p{
+  margin:0 0 24px;color:var(--concrete-100);max-width:78ch;font-size:15px;line-height:1.6;
 }
