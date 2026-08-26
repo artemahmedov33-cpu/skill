@@ -59,10 +59,22 @@
 <header id="hdr">
   <a class="logo" href="index.html" aria-label="Skill Gaming — на главную"><img class="mark" src="img/mark.svg" alt="" width="26" height="26">Skill<s>.</s>Gaming</a>
   <nav>
-    <a href="simulators.html">Симуляторы</a>
-    <a href="pc.html">ПК и PS5</a>
-    <a href="#zones">Тарифы</a>
-    <a href="#contacts">Контакты</a>
+    <div class="nav-inner">
+      <a href="index.html"><i>01</i><span>Главная</span></a>
+      <a href="simulators.html"><i>02</i><span>Симуляторы</span></a>
+      <a href="pc.html"><i>03</i><span>ПК и PS5</span></a>
+      <a href="index.html#zones"><i>04</i><span>Тарифы</span></a>
+      <a href="index.html#contacts"><i>05</i><span>Контакты</span></a>
+      <div class="nav-foot">
+        <a class="nav-tel" href="tel:88004442634">8 800 444-26-34</a>
+        <div class="nav-soc">
+          <a href="https://wa.me/79377074555" target="_blank" rel="noopener">WhatsApp</a>
+          <a href="https://t.me/Top_Skill_Club" target="_blank" rel="noopener">Telegram</a>
+          <a href="https://yandex.ru/maps/org/skill_gaming/54139655484/" target="_blank" rel="noopener">Карты</a>
+        </div>
+        <p>Краснознаменская, 6 · цокольный этаж · круглосуточно</p>
+      </div>
+    </div>
   </nav>
   <button class="burger" id="burger" aria-label="Меню" aria-expanded="false"><i></i><i></i></button>
   <a class="tel" href="tel:88004442634">8 800 444-26-34</a>
@@ -133,7 +145,7 @@
     </div>
     <div class="cards">
       <article class="card hero-card">
-        <img src="img/sim.webp" alt="Гоночный симулятор Skill Racing: три экрана, руль MOZA, красный ковш" loading="lazy">
+        <img src="img/sim.webp" alt="Гоночный симулятор Skill Racing: три экрана, руль MOZA, красный ковш">
         <div class="card-body">
           <span class="no">01 / RACING</span>
           <h3>Автосимулятор</h3>
@@ -148,7 +160,7 @@
       </article>
 
       <article class="card">
-        <img src="img/guest.webp" alt="Гость за компьютером в зоне Pro" loading="lazy">
+        <img src="img/guest.webp" alt="Гость за компьютером в зоне Pro">
         <div class="card-body">
           <span class="no">02 / PRO</span>
           <h3>ПК Pro</h3>
@@ -165,7 +177,7 @@
       </article>
 
       <article class="card">
-        <img src="img/hall.webp" alt="Зал клуба Skill Gaming" loading="lazy">
+        <img src="img/hall.webp" alt="Зал клуба Skill Gaming">
         <div class="card-body">
           <span class="no">03 / STANDART</span>
           <h3>ПК Standart</h3>
@@ -181,7 +193,7 @@
       </article>
 
       <article class="card">
-        <img src="img/headset.webp" alt="Гость в наушниках за игрой" loading="lazy">
+        <img src="img/headset.webp" alt="Гость в наушниках за игрой">
         <div class="card-body">
           <span class="no">04 / TV</span>
           <h3>PlayStation 5</h3>
@@ -194,6 +206,8 @@
         </div>
       </article>
     </div>
+
+    <p class="cards-hint" aria-hidden="true">Листайте карточки</p>
 
     <div class="rates">
       <div class="rates-head">
@@ -268,14 +282,14 @@
 
     <div class="rig-grid">
       <div class="blueprint">
-        <svg viewBox="0 0 640 400" aria-label="Схема гоночного кокпита">
+        <svg viewBox="86 66 530 344" aria-label="Схема гоночного кокпита">
           <defs>
             <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
               <path d="M32 0 H0 V32" fill="none" stroke="#20252C" stroke-width="1"/>
             </pattern>
           </defs>
-          <rect x="0" y="0" width="640" height="400" fill="url(#grid)"/>
-          <line class="bp-floor" x1="40" y1="345" x2="600" y2="345"/>
+          <rect x="-40" y="-40" width="760" height="520" fill="url(#grid)"/>
+          <line class="bp-floor" x1="128" y1="345" x2="574" y2="345"/>
 
           <!-- 03 рама -->
           <g class="bp-part" data-part="rig">
@@ -329,9 +343,9 @@
           </g>
 
           <g class="bp-dim">
-            <line x1="146" y1="368" x2="548" y2="368"/>
-            <path d="M146 363 L146 373 M548 363 L548 373"/>
-            <text x="347" y="386" text-anchor="middle">ОДИН КОКПИТ · ОДИН ГОСТЬ</text>
+            <line x1="146" y1="368" x2="556" y2="368"/>
+            <path d="M146 363 L146 373 M556 363 L556 373"/>
+            <text x="351" y="386" text-anchor="middle">ОДИН КОКПИТ · ОДИН ГОСТЬ</text>
           </g>
         </svg>
       </div>
