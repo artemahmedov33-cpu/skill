@@ -1171,7 +1171,7 @@ h1,h2,h3,.logo{overflow-wrap:break-word}
     padding:2px clamp(18px,4vw,54px) 6px;
     margin-left:calc(-1*clamp(18px,4vw,54px));
     margin-right:calc(-1*clamp(18px,4vw,54px));
-    scrollbar-width:none;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
   }
   .cards::-webkit-scrollbar{display:none}
   .card{

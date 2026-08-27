@@ -363,3 +363,37 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     });
   });
 })();
+
+/* ---------- Карусель зон: доводим карточку до места, если браузер не сделал сам ---------- */
+(function () {
+  const rail = document.querySelector('.cards');
+  if (!rail) return;
+
+  const cards = () => [...rail.querySelectorAll('.card')];
+  let timer = 0, touching = false;
+
+  const settle = () => {
+    if (touching) return;
+    const pad = parseFloat(getComputedStyle(rail).scrollPaddingLeft) || 0;
+    const now = rail.scrollLeft;
+    let best = null, dist = Infinity;
+    cards().forEach(c => {
+      const left = c.offsetLeft - rail.offsetLeft - pad;
+      const d = Math.abs(left - now);
+      if (d < dist) { dist = d; best = left; }
+    });
+    if (best !== null && dist > 2) rail.scrollTo({ left: best, behavior: 'smooth' });
+  };
+
+  rail.addEventListener('scroll', () => {
+    clearTimeout(timer);
+    timer = setTimeout(settle, 110);
+  }, { passive: true });
+
+  rail.addEventListener('touchstart', () => { touching = true; clearTimeout(timer); }, { passive: true });
+  rail.addEventListener('touchend', () => {
+    touching = false;
+    clearTimeout(timer);
+    timer = setTimeout(settle, 140);
+  }, { passive: true });
+})();
