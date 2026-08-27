@@ -364,36 +364,72 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   });
 })();
 
-/* ---------- Карусель зон: доводим карточку до места, если браузер не сделал сам ---------- */
+/* ---------- Карусель зон: листаем сами, без инерции браузера ---------- */
 (function () {
-  const rail = document.querySelector('.cards');
-  if (!rail) return;
+  const box = document.querySelector('.cards');
+  const track = box && box.querySelector('.cards-track');
+  if (!box || !track) return;
 
-  const cards = () => [...rail.querySelectorAll('.card')];
-  let timer = 0, touching = false;
+  const cards = [...track.children];
+  const dots = document.querySelector('.cards-dots');
+  let index = 0, startX = 0, startY = 0, dx = 0, dragging = false, locked = null;
 
-  const settle = () => {
-    if (touching) return;
-    const pad = parseFloat(getComputedStyle(rail).scrollPaddingLeft) || 0;
-    const now = rail.scrollLeft;
-    let best = null, dist = Infinity;
-    cards().forEach(c => {
-      const left = c.offsetLeft - rail.offsetLeft - pad;
-      const d = Math.abs(left - now);
-      if (d < dist) { dist = d; best = left; }
+  const mobile = () => matchMedia('(max-width:1000px)').matches;
+  const step = () => cards[1] ? cards[1].offsetLeft - cards[0].offsetLeft : box.clientWidth;
+  const maxIndex = () => cards.length - 1;
+
+  function render(offset) {
+    track.style.transform = 'translateX(' + (-index * step() + offset) + 'px)';
+    if (dots) [...dots.children].forEach((d, i) => d.classList.toggle('on', i === index));
+  }
+
+  function go(i) {
+    index = Math.max(0, Math.min(maxIndex(), i));
+    track.classList.remove('dragging');
+    render(0);
+  }
+
+  if (dots && !dots.children.length) {
+    cards.forEach((c, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', 'Зона ' + (i + 1));
+      b.addEventListener('click', () => go(i));
+      dots.append(b);
     });
-    if (best !== null && dist > 2) rail.scrollTo({ left: best, behavior: 'smooth' });
+  }
+
+  box.addEventListener('touchstart', e => {
+    if (!mobile()) return;
+    startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+    dx = 0; dragging = true; locked = null;
+    track.classList.add('dragging');
+  }, { passive: true });
+
+  box.addEventListener('touchmove', e => {
+    if (!dragging || !mobile()) return;
+    const mx = e.touches[0].clientX - startX;
+    const my = e.touches[0].clientY - startY;
+    if (locked === null) locked = Math.abs(mx) > Math.abs(my) ? 'x' : 'y';
+    if (locked === 'y') return;                     // вертикальная прокрутка страницы не мешает
+    dx = mx;
+    // у краёв тянется туго
+    if ((index === 0 && dx > 0) || (index === maxIndex() && dx < 0)) dx *= 0.35;
+    render(dx);
+  }, { passive: true });
+
+  const finish = () => {
+    if (!dragging) return;
+    dragging = false;
+    track.classList.remove('dragging');
+    const threshold = Math.min(80, step() * 0.22);
+    if (locked === 'x' && Math.abs(dx) > threshold) go(index + (dx < 0 ? 1 : -1));
+    else go(index);
+    dx = 0;
   };
+  box.addEventListener('touchend', finish, { passive: true });
+  box.addEventListener('touchcancel', finish, { passive: true });
 
-  rail.addEventListener('scroll', () => {
-    clearTimeout(timer);
-    timer = setTimeout(settle, 110);
-  }, { passive: true });
-
-  rail.addEventListener('touchstart', () => { touching = true; clearTimeout(timer); }, { passive: true });
-  rail.addEventListener('touchend', () => {
-    touching = false;
-    clearTimeout(timer);
-    timer = setTimeout(settle, 140);
-  }, { passive: true });
+  addEventListener('resize', () => { if (mobile()) go(index); else track.style.transform = ''; });
+  if (mobile()) go(0);
 })();

@@ -1163,20 +1163,19 @@ h1,h2,h3,.logo{overflow-wrap:break-word}
   .strip p{padding:0 clamp(18px,4vw,54px)}
 
   /* ---------- В. Карусель зон ---------- */
+  /* карусель ведём сами: никакой инерции и «улетания» между карточками */
   .cards{
     display:flex;gap:12px;background:none;
-    overflow-x:auto;scroll-snap-type:x mandatory;
-    scroll-padding-inline:clamp(18px,4vw,54px);
-    overscroll-behavior-x:contain;
+    overflow:hidden;touch-action:pan-y;
     padding:2px clamp(18px,4vw,54px) 6px;
     margin-left:calc(-1*clamp(18px,4vw,54px));
     margin-right:calc(-1*clamp(18px,4vw,54px));
     scrollbar-width:none;
+    will-change:transform;
   }
   .cards::-webkit-scrollbar{display:none}
   .card{
     flex:0 0 84vw;max-width:340px;
-    scroll-snap-align:start;scroll-snap-stop:always;
     border:1px solid var(--concrete-500);
   }
   .card img{
@@ -1259,4 +1258,27 @@ main > svg.rpm.docked{display:block}
     filter:none!important;transform:none!important;perspective:none!important;
   }
   header.stuck{background:#0B0D10}
+}
+
+
+/* ================= Карусель: полоса и точки ================= */
+@media (max-width:1000px){
+  .cards-track{
+    display:flex;gap:12px;
+    transition:transform .42s cubic-bezier(.22,.61,.36,1);
+  }
+  .cards-track.dragging{transition:none}
+  .cards-dots{
+    display:flex;gap:8px;align-items:center;margin:16px 0 0;
+  }
+  .cards-dots button{
+    width:26px;height:3px;padding:0;border:0;border-radius:0;
+    background:var(--concrete-500);cursor:pointer;transition:background .3s;
+  }
+  .cards-dots button.on{background:var(--red)}
+  .cards-hint{margin-top:12px}
+}
+@media (min-width:1001px){
+  .cards-dots{display:none}
+  .cards-track{display:contents}
 }
