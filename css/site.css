@@ -1305,3 +1305,35 @@ main > svg.rpm.docked{display:block}
   .cards-dots{margin:0;flex:1;justify-content:center}
   .cards-hint{display:none}
 }
+
+
+/* ================= Стрелки поверх карточек ================= */
+.cards-wrap{position:relative}
+@media (max-width:1000px){
+  .cards-arrow{
+    position:absolute;top:50%;transform:translateY(-50%);z-index:6;
+    width:44px;height:44px;
+    background:rgba(11,13,16,.82);border:1px solid var(--concrete-500);
+    box-shadow:0 6px 20px rgba(0,0,0,.45);
+  }
+  .cards-arrow[data-dir="-1"]{left:calc(clamp(18px,4vw,54px) - 14px)}
+  .cards-arrow[data-dir="1"]{right:calc(clamp(18px,4vw,54px) - 14px)}
+  .cards-arrow:active{background:var(--red);border-color:var(--red)}
+  .cards-arrow[disabled]{opacity:0;pointer-events:none}
+  /* внизу остаются только точки */
+  .cards-ctrl{display:flex;justify-content:center;margin-top:16px}
+  .cards-dots{flex:none}
+}
+@media (max-width:400px){
+  .cards-arrow{width:40px;height:40px}
+  .cards-arrow[data-dir="-1"]{left:6px}
+  .cards-arrow[data-dir="1"]{right:6px}
+}
+
+
+/* ================= Карусель: карточки видны сразу ================= */
+@media (max-width:1000px){
+  /* появление «снизу вверх» уместно в сетке на десктопе, но в карусели
+     соседняя карточка выплывает рывком прямо во время свайпа */
+  .cards .card,.cards .card.in{opacity:1;transform:none;transition:background .4s var(--ease-out)}
+}

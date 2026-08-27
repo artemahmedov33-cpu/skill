@@ -49,7 +49,7 @@
   ]
 }
 </script>
-<link rel="stylesheet" href="css/site.css?v=6">
+<link rel="stylesheet" href="css/site.css?v=8">
 </head>
 <body>
 
@@ -143,7 +143,8 @@
       <h2>Четыре зоны<br>под разный вечер</h2>
       <p>Цены с прайса клуба. Кэшбек 25% начисляется с каждого визита.</p>
     </div>
-    <div class="cards">
+    <div class="cards-wrap">
+  <div class="cards">
       <div class="cards-track">
       <article class="card hero-card">
         <img src="img/sim.webp" alt="Гоночный симулятор Skill Racing: три экрана, руль MOZA, красный ковш">
@@ -208,15 +209,16 @@
       </article>
       </div>
     </div>
-
-    <div class="cards-ctrl">
       <button class="cards-arrow" type="button" data-dir="-1" aria-label="Предыдущая зона">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4 L7 12 L15 20"/></svg>
       </button>
-      <div class="cards-dots" role="tablist" aria-label="Зоны клуба"></div>
       <button class="cards-arrow" type="button" data-dir="1" aria-label="Следующая зона">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 L17 12 L9 20"/></svg>
       </button>
+    </div>
+
+    <div class="cards-ctrl">
+      <div class="cards-dots" role="tablist" aria-label="Зоны клуба"></div>
     </div>
     <p class="cards-hint" aria-hidden="true">Листайте карточки</p>
 
@@ -615,6 +617,6 @@
 </div>
 </main>
 
-<script src="js/site.js?v=6" defer></script>
+<script src="js/site.js?v=8" defer></script>
 </body>
 </html>
