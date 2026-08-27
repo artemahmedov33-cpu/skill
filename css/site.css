@@ -1282,3 +1282,26 @@ main > svg.rpm.docked{display:block}
   .cards-dots{display:none}
   .cards-track{display:contents}
 }
+
+
+/* ================= Управление каруселью ================= */
+.cards-ctrl{display:none}
+@media (max-width:1000px){
+  .cards-ctrl{
+    display:flex;align-items:center;gap:14px;margin-top:18px;
+  }
+  .cards-arrow{
+    flex:none;width:46px;height:46px;padding:0;
+    border:1px solid var(--concrete-500);background:var(--graphite-700);
+    color:var(--concrete-100);cursor:pointer;border-radius:2px;
+    display:flex;align-items:center;justify-content:center;
+    transition:border-color .25s,color .25s,background .25s,opacity .25s;
+  }
+  .cards-arrow svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;
+    stroke-linecap:round;stroke-linejoin:round}
+  .cards-arrow:active{background:var(--red);border-color:var(--red);color:#fff}
+  .cards-arrow[disabled]{opacity:.32;pointer-events:none}
+  .cards-arrow:focus-visible{outline:2px solid var(--red-hot);outline-offset:2px}
+  .cards-dots{margin:0;flex:1;justify-content:center}
+  .cards-hint{display:none}
+}

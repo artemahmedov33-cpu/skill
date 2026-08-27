@@ -364,7 +364,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   });
 })();
 
-/* ---------- Карусель зон: листаем сами, без инерции браузера ---------- */
+/* ---------- Карусель зон: свайп, стрелки, точки ---------- */
 (function () {
   const box = document.querySelector('.cards');
   const track = box && box.querySelector('.cards-track');
@@ -372,19 +372,24 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const cards = [...track.children];
   const dots = document.querySelector('.cards-dots');
-  let index = 0, startX = 0, startY = 0, dx = 0, dragging = false, locked = null;
+  const arrows = [...document.querySelectorAll('.cards-arrow')];
+  let index = 0, startX = 0, startY = 0, startT = 0, dx = 0, dragging = false, locked = null;
 
   const mobile = () => matchMedia('(max-width:1000px)').matches;
-  const step = () => cards[1] ? cards[1].offsetLeft - cards[0].offsetLeft : box.clientWidth;
-  const maxIndex = () => cards.length - 1;
+  const step = () => (cards[1] ? cards[1].offsetLeft - cards[0].offsetLeft : box.clientWidth);
+  const last = () => cards.length - 1;
 
   function render(offset) {
     track.style.transform = 'translateX(' + (-index * step() + offset) + 'px)';
     if (dots) [...dots.children].forEach((d, i) => d.classList.toggle('on', i === index));
+    arrows.forEach(a => {
+      const dir = +a.dataset.dir;
+      a.disabled = (dir < 0 && index === 0) || (dir > 0 && index === last());
+    });
   }
 
   function go(i) {
-    index = Math.max(0, Math.min(maxIndex(), i));
+    index = Math.max(0, Math.min(last(), i));
     track.classList.remove('dragging');
     render(0);
   }
@@ -398,10 +403,12 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
       dots.append(b);
     });
   }
+  arrows.forEach(a => a.addEventListener('click', () => go(index + (+a.dataset.dir))));
 
   box.addEventListener('touchstart', e => {
     if (!mobile()) return;
     startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+    startT = performance.now();
     dx = 0; dragging = true; locked = null;
     track.classList.add('dragging');
   }, { passive: true });
@@ -410,11 +417,12 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!dragging || !mobile()) return;
     const mx = e.touches[0].clientX - startX;
     const my = e.touches[0].clientY - startY;
-    if (locked === null) locked = Math.abs(mx) > Math.abs(my) ? 'x' : 'y';
-    if (locked === 'y') return;                     // вертикальная прокрутка страницы не мешает
+    if (locked === null && (Math.abs(mx) > 6 || Math.abs(my) > 6)) {
+      locked = Math.abs(mx) > Math.abs(my) ? 'x' : 'y';
+    }
+    if (locked !== 'x') return;
     dx = mx;
-    // у краёв тянется туго
-    if ((index === 0 && dx > 0) || (index === maxIndex() && dx < 0)) dx *= 0.35;
+    if ((index === 0 && dx > 0) || (index === last() && dx < 0)) dx *= 0.35;
     render(dx);
   }, { passive: true });
 
@@ -422,8 +430,10 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!dragging) return;
     dragging = false;
     track.classList.remove('dragging');
-    const threshold = Math.min(80, step() * 0.22);
-    if (locked === 'x' && Math.abs(dx) > threshold) go(index + (dx < 0 ? 1 : -1));
+    const dt = Math.max(1, performance.now() - startT);
+    const speed = Math.abs(dx) / dt;                 // px/мс — короткий быстрый флик тоже листает
+    const enough = Math.abs(dx) > 28 || speed > 0.28;
+    if (locked === 'x' && enough) go(index + (dx < 0 ? 1 : -1));
     else go(index);
     dx = 0;
   };
@@ -431,5 +441,5 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   box.addEventListener('touchcancel', finish, { passive: true });
 
   addEventListener('resize', () => { if (mobile()) go(index); else track.style.transform = ''; });
-  if (mobile()) go(0);
+  if (mobile()) go(0); else render(0);
 })();
