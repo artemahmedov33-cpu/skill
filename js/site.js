@@ -77,17 +77,35 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let pos = 0, lapT = 98.42;
   if (track) live.style.strokeDasharray = '58 ' + LEN;
 
+  let running = false, idleTimer = 0, sceneVisible = !!track;
+
+  const start = () => { if (!running && !document.hidden) { running = true; requestAnimationFrame(frame); } };
+
   addEventListener('scroll', () => {
     const d = Math.abs(scrollY - lastY); lastY = scrollY;
     target = Math.min(1, IDLE + d / 42);
+    start();
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => { target = IDLE; }, 900);
   }, { passive: true });
+
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) start(); });
+
+  // машина едет только когда трасса на экране
+  if (track) {
+    const scene = track.closest('.scene');
+    if (scene && 'IntersectionObserver' in window) {
+      new IntersectionObserver(es => {
+        sceneVisible = es[0].isIntersecting;
+        if (sceneVisible) start();
+      }, { threshold: 0 }).observe(scene);
+    }
+  }
 
   box.classList.add('docked');            // прибор виден сразу, на всех страницах
   box.addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
 
   function frame() {
-    const idleNow = IDLE + Math.sin(performance.now() / 640) * 0.004;
-    target += (idleNow - target) * 0.03;
     rpm += (target - rpm) * 0.09;
 
     needle.setAttribute('transform', 'rotate(' + (-135 + rpm * 270) + ' 50 50)');
@@ -96,7 +114,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     fill.setAttribute('stroke-dasharray', (ARC * progress).toFixed(1) + ' ' + ARC);
     rpmval.textContent = String(Math.round(rpm * 8200 / 10) * 10);
 
-    if (track) {
+    if (track && sceneVisible) {
       pos = (pos + 0.6 + rpm * 5.2) % LEN;
       const pt = track.getPointAtLength(pos);
       car.setAttribute('cx', pt.x); car.setAttribute('cy', pt.y);
@@ -106,9 +124,12 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (pos < 6) lapT = 92 + Math.random() * 12;
       lap.textContent = Math.floor(lapT / 60) + ':' + (lapT % 60).toFixed(2).padStart(5, '0');
     }
-    requestAnimationFrame(frame);
+    // в покое кадры не тратим: стрелка замерла, трасса вне экрана
+    const restless = Math.abs(rpm - target) > 0.0015 || (track && sceneVisible);
+    if (restless && !document.hidden) requestAnimationFrame(frame);
+    else running = false;
   }
-  frame();
+  start();
 })();
 
 /* ---------- Появление карточек ---------- */
@@ -146,8 +167,14 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     list.style.setProperty('--flow', seen.toFixed(3));
     items.forEach(li => li.classList.toggle('done', li.getBoundingClientRect().top < innerHeight * .72));
   }
-  addEventListener('scroll', tick, { passive: true });
-  addEventListener('resize', tick);
+  let queued = false;
+  const onScroll = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => { tick(); queued = false; });
+  };
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
   tick();
 })();
 

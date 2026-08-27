@@ -1238,3 +1238,25 @@ h1,h2,h3,.logo{overflow-wrap:break-word}
 /* на страницах без сцены прибор создаётся скриптом и живёт только в углу */
 main > svg.rpm{position:fixed;display:none}
 main > svg.rpm.docked{display:block}
+
+
+/* ================= Экономия кадров на телефоне ================= */
+@media (max-width:1000px){
+  /* размытие фона на мобильных стоит дороже, чем выглядит: заменяем плотным цветом */
+  .mbar{backdrop-filter:none;-webkit-backdrop-filter:none;background:#0B0D10}
+  header.stuck{backdrop-filter:none;-webkit-backdrop-filter:none;background:#0B0D10}
+  /* зерно и подсветку фона не перерисовываем при прокрутке */
+  body::before,body::after{will-change:auto;contain:strict}
+}
+
+
+/* ================= Страховка для полноэкранного меню ================= */
+/* любой фильтр или трансформация у шапки делают её точкой отсчёта для
+   вложенного меню — меню схлопывается в полоску. На мобильных запрещаем всё это */
+@media (max-width:1000px){
+  header,header.stuck{
+    backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+    filter:none!important;transform:none!important;perspective:none!important;
+  }
+  header.stuck{background:#0B0D10}
+}
