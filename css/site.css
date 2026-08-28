@@ -1337,3 +1337,15 @@ main > svg.rpm.docked{display:block}
      соседняя карточка выплывает рывком прямо во время свайпа */
   .cards .card,.cards .card.in{opacity:1;transform:none;transition:background .4s var(--ease-out)}
 }
+
+
+/* стрелки не должны красть жест: пропускаем касание к карусели */
+@media (max-width:1000px){
+  .cards-arrow{touch-action:pan-y}
+}
+
+
+/* на десктопе карточки видны все сразу — управление каруселью ни к чему */
+@media (min-width:1001px){
+  .cards-arrow,.cards-dots,.cards-ctrl,.cards-hint{display:none!important}
+}

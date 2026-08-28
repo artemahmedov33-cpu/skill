@@ -369,6 +369,8 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const box = document.querySelector('.cards');
   const track = box && box.querySelector('.cards-track');
   if (!box || !track) return;
+  const zone = box.closest('.cards-wrap') || box;   // стрелки лежат поверх карусели —
+                                                    // слушаем жест на всей обёртке
 
   const cards = [...track.children];
   const dots = document.querySelector('.cards-dots');
@@ -403,9 +405,12 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
       dots.append(b);
     });
   }
-  arrows.forEach(a => a.addEventListener('click', () => go(index + (+a.dataset.dir))));
+  arrows.forEach(a => a.addEventListener('click', e => {
+    if (Math.abs(dx) > 8) { e.preventDefault(); return; }   // это был свайп по стрелке
+    go(index + (+a.dataset.dir));
+  }));
 
-  box.addEventListener('touchstart', e => {
+  zone.addEventListener('touchstart', e => {
     if (!mobile()) return;
     startX = e.touches[0].clientX; startY = e.touches[0].clientY;
     startT = performance.now();
@@ -413,7 +418,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     track.classList.add('dragging');
   }, { passive: true });
 
-  box.addEventListener('touchmove', e => {
+  zone.addEventListener('touchmove', e => {
     if (!dragging || !mobile()) return;
     const mx = e.touches[0].clientX - startX;
     const my = e.touches[0].clientY - startY;
@@ -437,8 +442,8 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     else go(index);
     dx = 0;
   };
-  box.addEventListener('touchend', finish, { passive: true });
-  box.addEventListener('touchcancel', finish, { passive: true });
+  zone.addEventListener('touchend', finish, { passive: true });
+  zone.addEventListener('touchcancel', finish, { passive: true });
 
   addEventListener('resize', () => { if (mobile()) go(index); else track.style.transform = ''; });
   if (mobile()) go(0); else render(0);
