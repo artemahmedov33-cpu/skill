@@ -16,9 +16,10 @@
 <link rel="icon" type="image/png" sizes="64x64" href="img/favicon-64.png">
 <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
-<link rel="stylesheet" href="css/site.css?v=10">
+<link rel="stylesheet" href="css/site.css?v=22">
 </head>
 <body>
+<div class="aurora" aria-hidden="true"><div class="au-p au-p3"><i class="au-f au-f3"></i></div><div class="au-p au-p2"><i class="au-f au-f2"></i></div><div class="au-p au-p1"><i class="au-f au-f1"></i></div><div class="au-p au-p4"><i class="au-shape"><i class="au-comet"></i></i></div></div>
 
 <div id="lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
 <div class="cursor" id="cursor" aria-hidden="true"></div>
@@ -26,10 +27,10 @@
   <a class="logo" href="index.html" aria-label="Skill Gaming — на главную"><img class="mark" src="img/mark.svg" alt="" width="26" height="26">Skill<s>.</s>Gaming</a>
   <nav>
     <div class="nav-inner">
-      <a href="index.html"><i>01</i><span>Главная</span></a>
-      <a href="simulators.html"><i>02</i><span>Симуляторы</span></a>
-      <a href="pc.html"><i>03</i><span>ПК и PS5</span></a>
-      <a href="index.html#zones"><i>04</i><span>Тарифы</span></a>
+      <a href="index.html#rates"><i>01</i><span>Тарифы</span></a>
+      <a href="index.html#zones"><i>02</i><span>Зоны</span></a>
+      <a href="simulators.html"><i>03</i><span>Симуляторы</span></a>
+      <a href="index.html#bar"><i>04</i><span>Бар</span></a>
       <a href="index.html#contacts"><i>05</i><span>Контакты</span></a>
       <div class="nav-foot">
         <a class="nav-tel" href="tel:88004442634">8 800 444-26-34</a>
@@ -58,8 +59,119 @@
   </section>
 
   <section class="shot">
-    <img src="img/sim.webp" alt="Кокпит Skill Racing: три изогнутых экрана, руль MOZA, красное ковшеобразное кресло на раме">
-    <p>Кокпит Skill Racing. Кадр с Яндекс.Карт — заменим на съёмку клуба</p>
+    <img src="img/sim.webp" alt="Гость за рулём кокпита Skill Racing: три изогнутых экрана, руль MOZA, ковш BRIDE">
+    <p>Кокпит Skill Racing — два поста с триплами и рулём MOZA</p>
+  </section>
+
+  <section class="rig" id="rig">
+    <div class="sec-top">
+      <h2>Что стоит<br>в кокпите</h2>
+      <p>Не «компьютер с рулём»: кокпит собран как тренажёр — жёсткая рама, нагрузочные педали, отдача на руле. Наведите на узел, чтобы найти его на схеме, а <a class="ilink" href="simulators.html">здесь — что чувствуешь за рулём</a>.</p>
+    </div>
+
+    <div class="rig-grid">
+      <div class="blueprint">
+        <svg viewBox="86 66 530 344" aria-label="Схема гоночного кокпита">
+          <defs>
+            <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+              <path d="M32 0 H0 V32" fill="none" stroke="#20252C" stroke-width="1"/>
+            </pattern>
+          </defs>
+          <rect x="-40" y="-40" width="760" height="520" fill="url(#grid)"/>
+          <line class="bp-floor" x1="128" y1="345" x2="574" y2="345"/>
+
+          <!-- 03 рама -->
+          <g class="bp-part" data-part="rig">
+            <rect class="bp-line" x="168" y="250" width="356" height="11" rx="2"/>
+            <path class="bp-line" d="M180 261 L180 345 M512 261 L512 345 M180 300 L512 300"/>
+            <path class="bp-line" d="M180 261 L146 345 M512 261 L548 345"/>
+            <text class="bp-num" x="150" y="292">03</text>
+          </g>
+
+          <!-- 04 кресло -->
+          <g class="bp-part" data-part="seat">
+            <path class="bp-line" d="M214 250 L300 248 C309 248 312 242 310 236 L220 238 Z"/>
+            <path class="bp-line" d="M220 238 L202 154 C200 143 208 135 219 136 L243 141 L258 232"/>
+            <path class="bp-line" d="M206 160 L186 155"/>
+            <text class="bp-num" x="176" y="132">04</text>
+          </g>
+
+          <!-- 01 руль -->
+          <g class="bp-part" data-part="wheel">
+            <line class="bp-line" x1="360" y1="250" x2="360" y2="216"/>
+            <circle class="bp-line" cx="360" cy="186" r="30"/>
+            <circle class="bp-line" cx="360" cy="186" r="8"/>
+            <path class="bp-line" d="M338 168 L382 204 M382 168 L338 204"/>
+            <text class="bp-num" x="360" y="138" text-anchor="middle">01</text>
+          </g>
+
+          <!-- 02 педали -->
+          <g class="bp-part" data-part="pedals">
+            <rect class="bp-line" x="392" y="242" width="76" height="8" rx="1"/>
+            <path class="bp-line" d="M402 242 L416 214 M424 242 L438 214 M446 242 L460 214"/>
+            <path class="bp-line" d="M413 214 L420 211 M435 214 L442 211 M457 214 L464 211"/>
+            <text class="bp-num" x="392" y="272">02</text>
+          </g>
+
+          <!-- 05 три экрана -->
+          <g class="bp-part" data-part="screen">
+            <path class="bp-line" d="M300 96 L300 176"/>
+            <rect class="bp-line" x="300" y="86" width="176" height="96" rx="3"/>
+            <path class="bp-line" d="M476 86 L556 104 L556 190 L476 182 Z"/>
+            <path class="bp-line" d="M300 86 L232 104 L232 190 L300 182"/>
+            <path class="bp-line" d="M388 182 L388 250 M362 250 L414 250"/>
+            <text class="bp-num" x="566" y="100">05</text>
+          </g>
+
+          <!-- 06 секвентальная коробка -->
+          <g class="bp-part" data-part="shifter">
+            <path class="bp-line" d="M470 250 L470 224 L462 216"/>
+            <circle class="bp-line" cx="459" cy="212" r="6"/>
+            <rect class="bp-line" x="452" y="250" width="36" height="7" rx="1"/>
+            <text class="bp-num" x="498" y="212">06</text>
+          </g>
+
+          <g class="bp-dim">
+            <line x1="146" y1="368" x2="556" y2="368"/>
+            <path d="M146 363 L146 373 M556 363 L556 373"/>
+            <text x="351" y="386" text-anchor="middle">ОДИН КОКПИТ · ОДИН ГОСТЬ</text>
+          </g>
+        </svg>
+      </div>
+
+      <ul class="rig-list">
+        <li data-part="wheel">
+          <i>01</i><b>Руль MOZA с прямым приводом</b>
+          <span>Мотор передаёт снос, поребрик и вес машины прямо в руки — это не вибромоторчик, а усилие, которое приходится держать</span>
+          <em>модель уточняем у клуба</em>
+        </li>
+        <li data-part="pedals">
+          <i>02</i><b>Педальный узел</b>
+          <span>Тормоз работает от усилия ноги, а не от глубины нажатия — как в настоящей машине</span>
+          <em>тип уточняем у клуба</em>
+        </li>
+        <li data-part="rig">
+          <i>03</i><b>Рама SKILL Racing</b>
+          <span>Профильный кокпит с подсветкой: ничего не гуляет под нагрузкой, посадка одинаковая на первом и на сотом круге</span>
+          <em>с фотографий клуба</em>
+        </li>
+        <li data-part="seat">
+          <i>04</i><b>Ковшеобразное кресло</b>
+          <span>Красный ковш держит корпус в поворотах и регулируется под рост</span>
+          <em>с фотографий клуба</em>
+        </li>
+        <li data-part="screen">
+          <i>05</i><b>Три изогнутых экрана</b>
+          <span>Панорама вокруг головы: соперника видно боковым зрением, а не по стрелке на радаре</span>
+          <em>с фотографий клуба</em>
+        </li>
+        <li data-part="shifter">
+          <i>06</i><b>Секвентальная коробка</b>
+          <span>Рычаг с фиксацией под правой рукой — переключаетесь как в раллийной машине, без подрулевых лепестков</span>
+          <em>с фотографий клуба</em>
+        </li>
+      </ul>
+    </div>
   </section>
 
   <section class="feel" id="feel">
@@ -241,9 +353,9 @@
     </div>
     <div class="foot-bottom">
       <span>© 2026 Skill Gaming</span>
-      <span class="foot-small">Реквизиты и политика конфиденциальности — после ответов клуба на бриф</span>
+      <a class="foot-small" href="privacy.html">Политика конфиденциальности</a>
     </div>
   </footer>
-<script src="js/site.js?v=10" defer></script>
+<script src="js/site.js?v=22" defer></script>
 </body>
 </html>

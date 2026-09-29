@@ -102,6 +102,9 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     }
   }
 
+  // прибор живёт прямо в body: внутри первого экрана его перекрывали все блоки ниже,
+  // потому что у первого экрана свой слой (isolation) и z-index 70 работал только внутри него
+  document.body.append(box);
   box.classList.add('docked');            // прибор виден сразу, на всех страницах
   box.addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
 
@@ -447,4 +450,525 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   addEventListener('resize', () => { if (mobile()) go(index); else track.style.transform = ''; });
   if (mobile()) go(0); else render(0);
+})();
+
+/* ============================================================
+   ГЛАВНАЯ v2: секундомер, температуры, зоны, галерея, карта, фон
+   ============================================================ */
+
+/* ---------- Секундомер круга: тикает сотыми, сброс на каждом круге ---------- */
+(function () {
+  const lap = document.getElementById('lap');
+  if (!lap || reduce) return;
+  let t0 = performance.now(), best = 98420, running = true;
+  function draw(ms) {
+    const m = Math.floor(ms / 60000);
+    const s = Math.floor((ms % 60000) / 1000);
+    const c = Math.floor((ms % 1000) / 10);
+    lap.innerHTML = m + ':' + String(s).padStart(2, '0') + '.<small>' + String(c).padStart(2, '0') + '</small>';
+  }
+  function tick(now) {
+    const ms = now - t0;
+    if (ms > best) { t0 = now; best = 92000 + (ms % 9000); }   // новый круг: 1:32–1:41
+    draw(ms);
+    if (running && !document.hidden) requestAnimationFrame(tick);
+    else running = false;
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && !running) { running = true; t0 = performance.now(); requestAnimationFrame(tick); }
+  });
+  requestAnimationFrame(tick);
+})();
+
+/* ---------- Температуры: масло и охлаждение ходят 0→100→0 в противофазе ---------- */
+(function () {
+  const oil = document.getElementById('tOil'), cool = document.getElementById('tCool');
+  const oilBar = document.getElementById('tOilBar'), coolBar = document.getElementById('tCoolBar');
+  if (!oil || !cool) return;
+  const oilBox = oil.closest('.temp'), coolBox = cool.closest('.temp');
+  if (reduce) { oil.textContent = '87'; cool.textContent = '92'; oilBar.style.transform = 'scaleX(.87)'; coolBar.style.transform = 'scaleX(.92)'; return; }
+  let last = 0;
+  function frame(now) {
+    if (now - last > 120) {                    // 8 обновлений в секунду хватает, глаз не видит больше
+      last = now;
+      const t = now / 1000;
+      // медленный треугольный ход 0…100…0 за ~24 с + лёгкая дрожь
+      const tri = x => 100 * Math.abs(((x / 24) % 2) - 1);
+      const o = Math.round(Math.min(100, Math.max(0, tri(t) + Math.sin(t * 2.1) * 1.6)));
+      const c = Math.round(Math.min(100, Math.max(0, tri(t + 12) + Math.sin(t * 1.7 + 1) * 1.6)));
+      oil.textContent = o; cool.textContent = c;
+      oilBar.style.transform = 'scaleX(' + o / 100 + ')'; coolBar.style.transform = 'scaleX(' + c / 100 + ')';
+      oilBox.classList.toggle('hot', o > 90); coolBox.classList.toggle('hot', c > 90);
+    }
+    if (!document.hidden) requestAnimationFrame(frame);
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) requestAnimationFrame(frame); });
+  requestAnimationFrame(frame);
+})();
+
+/* ---------- Общий слайдер: свайп + стрелки + точки (зоны и галерея) ---------- */
+function makeSlider(o) {
+  const wrap = document.querySelector(o.wrap);
+  const track = wrap && wrap.querySelector(o.track);
+  if (!wrap || !track) return null;
+  const items = [...track.children];
+  const arrows = [...document.querySelectorAll(o.arrows)];
+  const dots = o.dots ? document.querySelector(o.dots) : null;
+  const counter = o.counter ? document.getElementById(o.counter) : null;
+  let index = 0, startX = 0, startY = 0, startT = 0, dx = 0, dragging = false, locked = null;
+
+  const active = () => !o.mobileOnly || matchMedia('(max-width:1000px)').matches;
+  const step = () => items[1] ? items[1].offsetLeft - items[0].offsetLeft : wrap.clientWidth;
+  // дальше последнего «полного» экрана не листаем: справа не должно оставаться пустоты
+  const maxOffset = () => Math.max(0, track.scrollWidth - wrap.clientWidth);
+  const last = () => Math.min(items.length - 1, Math.ceil(maxOffset() / step() - 0.01));
+  const perView = () => Math.max(1, Math.round((wrap.clientWidth + (step() - items[0].offsetWidth)) / step()));
+
+  function render(offset) {
+    track.style.transform = 'translateX(' + (-Math.min(index * step(), maxOffset()) + offset) + 'px)';
+    if (dots) [...dots.children].forEach((d, i) => d.classList.toggle('on', i === index));
+    if (counter) { const v = perView(); counter.textContent = v > 1 ? (index + 1) + '–' + Math.min(items.length, index + v) : index + 1; }
+    arrows.forEach(a => { const d = +a.dataset.dir; a.disabled = (d < 0 && index === 0) || (d > 0 && index === last()); });
+  }
+  function go(i) { index = Math.max(0, Math.min(last(), i)); track.classList.remove('dragging'); render(0); }
+
+  if (dots && !dots.children.length) items.forEach((c, i) => {
+    const b = document.createElement('button'); b.type = 'button';
+    b.setAttribute('aria-label', (o.label || 'Слайд') + ' ' + (i + 1));
+    b.addEventListener('click', () => go(i)); dots.append(b);
+  });
+  arrows.forEach(a => a.addEventListener('click', e => {
+    if (Math.abs(dx) > 8) { e.preventDefault(); return; }
+    go(index + (+a.dataset.dir));
+  }));
+
+  wrap.addEventListener('touchstart', e => {
+    if (!active()) return;
+    startX = e.touches[0].clientX; startY = e.touches[0].clientY; startT = performance.now();
+    dx = 0; dragging = true; locked = null; track.classList.add('dragging');
+  }, { passive: true });
+  wrap.addEventListener('touchmove', e => {
+    if (!dragging || !active()) return;
+    const mx = e.touches[0].clientX - startX, my = e.touches[0].clientY - startY;
+    if (locked === null && (Math.abs(mx) > 6 || Math.abs(my) > 6)) locked = Math.abs(mx) > Math.abs(my) ? 'x' : 'y';
+    if (locked !== 'x') return;
+    dx = mx;
+    if ((index === 0 && dx > 0) || (index === last() && dx < 0)) dx *= 0.35;
+    render(dx);
+  }, { passive: true });
+  const finish = () => {
+    if (!dragging) return;
+    dragging = false; track.classList.remove('dragging');
+    const speed = Math.abs(dx) / Math.max(1, performance.now() - startT);
+    if (locked === 'x' && (Math.abs(dx) > 28 || speed > 0.28)) go(index + (dx < 0 ? 1 : -1)); else go(index);
+    dx = 0;
+  };
+  wrap.addEventListener('touchend', finish, { passive: true });
+  wrap.addEventListener('touchcancel', finish, { passive: true });
+
+  // мышью на десктопе — тоже можно тянуть
+  let mdown = false;
+  wrap.addEventListener('mousedown', e => {
+    if (!active() || e.button !== 0) return;
+    mdown = true; startX = e.clientX; startT = performance.now(); dx = 0; track.classList.add('dragging'); e.preventDefault();
+  });
+  addEventListener('mousemove', e => { if (!mdown) return; dx = e.clientX - startX; render(dx); });
+  addEventListener('mouseup', () => {
+    if (!mdown) return; mdown = false; track.classList.remove('dragging');
+    if (Math.abs(dx) > 40) go(index + (dx < 0 ? 1 : -1)); else go(index);
+    const moved = Math.abs(dx) > 8; dx = 0;
+    if (moved) { wrap.dataset.moved = '1'; setTimeout(() => delete wrap.dataset.moved, 50); }
+  });
+
+  addEventListener('resize', () => { if (active()) go(index); else { track.style.transform = ''; } });
+  if (active()) go(0); else render(0);
+  return { go, get index() { return index; }, items };
+}
+
+/* ---------- Зоны: на телефоне карусель ---------- */
+makeSlider({ wrap: '.zm-wrap', track: '.zm-list', arrows: '.zm-arrow', dots: '.zm-dots', label: 'Зона', mobileOnly: true });
+
+/* ---------- Галерея: слайдер + лайтбокс ---------- */
+(function () {
+  const gal = makeSlider({ wrap: '.gal-wrap', track: '.gal-track', arrows: '.gal-arrow', counter: 'galCur', label: 'Фото' });
+  const total = document.getElementById('galTotal');
+  if (gal && total) total.textContent = gal.items.length;
+
+  const lb = document.getElementById('lb');
+  if (!lb) return;
+  const img = document.getElementById('lbImg'), cap = document.getElementById('lbCap');
+  let list = [], cur = 0;
+
+  function show(i) {
+    cur = (i + list.length) % list.length;
+    img.src = list[cur].src; img.alt = list[cur].alt || '';
+    cap.textContent = list[cur].cap || '';
+    lb.classList.toggle('single', list.length < 2);
+  }
+  function open(items, i) {
+    list = items; show(i); lb.hidden = false; document.body.style.overflow = 'hidden';
+  }
+  function close() { lb.hidden = true; document.body.style.overflow = ''; }
+
+  if (gal) gal.items.forEach((fig, i) => fig.addEventListener('click', () => {
+    if (document.querySelector('.gal-wrap').dataset.moved) return;   // это был драг, а не клик
+    open(gal.items.map(f => {
+      const im = f.querySelector('img'), c = f.querySelector('figcaption');
+      return { src: im.currentSrc || im.src, alt: im.alt, cap: c ? c.textContent : '' };
+    }), i);
+  }));
+
+  // скриншоты отзывов — одиночный просмотр
+  document.querySelectorAll('.rv-proof').forEach(b => b.addEventListener('click', () => {
+    const fig = b.closest('.rv');
+    const who = fig ? fig.querySelector('.rv-top b').textContent : '';
+    open([{ src: b.dataset.shot, alt: 'Скриншот отзыва', cap: who }], 0);
+  }));
+
+  lb.querySelector('.lb-close').addEventListener('click', close);
+  lb.querySelector('.lb-prev').addEventListener('click', () => show(cur - 1));
+  lb.querySelector('.lb-next').addEventListener('click', () => show(cur + 1));
+  lb.addEventListener('click', e => { if (e.target === lb) close(); });
+  addEventListener('keydown', e => {
+    if (lb.hidden) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') show(cur - 1);
+    if (e.key === 'ArrowRight') show(cur + 1);
+  });
+  // свайп внутри лайтбокса
+  let sx = 0;
+  lb.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+  lb.addEventListener('touchend', e => {
+    const d = e.changedTouches[0].clientX - sx;
+    if (Math.abs(d) > 40 && list.length > 1) show(cur + (d < 0 ? 1 : -1));
+  }, { passive: true });
+})();
+
+/* ---------- Карта: снимок сразу, живая карта грузится заранее и сменяет его ---------- */
+// Виджет Яндекса тяжёлый (~140 запросов, 4–5 с), а тайлы вне экрана браузер не дорисовывает.
+// Поэтому: 1) в разметке лежит снимок той же карты — человек видит карту мгновенно;
+// 2) виджет начинаем грузить заранее, по первому действию человека на странице;
+// 3) снимок убираем, только когда виджет загружен И уже на экране, + пауза, чтобы тайлы успели нарисоваться.
+(function () {
+  const frame = document.querySelector('.map-frame');
+  if (!frame) return;
+  let started = false, loaded = false, seen = false, done = false;
+  const reveal = () => {
+    if (done || !loaded || !seen) return;
+    done = true;
+    setTimeout(() => frame.classList.add('ready'), 1100);
+  };
+  const load = () => {
+    if (started) return; started = true;
+    const f = document.createElement('iframe');
+    f.src = frame.dataset.src; f.title = 'Skill Gaming на карте';
+    f.setAttribute('allowfullscreen', '');
+    f.addEventListener('load', () => { loaded = true; reveal(); }, { once: true });
+    setTimeout(() => { loaded = true; reveal(); }, 15000);   // load так и не пришёл — всё равно открываем
+    // фрейм — ПЕРЕД снимком: у фрейма есть filter, а элемент с filter рисуется как позиционированный
+    // в порядке разметки; стоял бы после снимка — пустой ещё фрейм перекрыл бы снимок тёмным полем
+    frame.prepend(f);
+  };
+  if ('IntersectionObserver' in window) {
+    // на экране ли карта (для смены снимка на живую карту)
+    new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { seen = true; load(); reveal(); } }, { threshold: 0.2 }).observe(frame);
+  } else { seen = true; load(); }
+
+  const c = navigator.connection;
+  const frugal = !!(c && (c.saveData || /2g/.test(c.effectiveType || '')));   // «3g» Chrome часто показывает и на нормальном мобильном интернете
+  const idle = fn => ('requestIdleCallback' in window) ? requestIdleCallback(fn, { timeout: 1500 }) : setTimeout(fn, 800);
+  const whenLoaded = fn => document.readyState === 'complete' ? fn() : addEventListener('load', fn, { once: true });
+
+  // человек целится в «Контакты» — начинаем сразу
+  document.querySelectorAll('a[href$="#contacts"]').forEach(a =>
+    ['pointerenter', 'touchstart', 'focus'].forEach(ev => a.addEventListener(ev, load, { once: true, passive: true })));
+
+  // на подходе к блоку — всегда (и при экономии трафика)
+  if ('IntersectionObserver' in window) {
+    const near = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { load(); near.disconnect(); } },
+      { rootMargin: (frugal ? 600 : 2000) + 'px 0px' });
+    near.observe(frame);
+  }
+  if (frugal) return;
+  // по первому действию на странице (мышь, касание, прокрутка, клавиша) — в простое.
+  // Не сразу при загрузке: робот PageSpeed ничего не делает, и тяжёлые скрипты карты не портят ему оценку.
+  const evs = ['pointermove', 'pointerdown', 'touchstart', 'wheel', 'scroll', 'keydown'];
+  const go = () => { evs.forEach(e => removeEventListener(e, go)); whenLoaded(() => idle(load)); };
+  evs.forEach(e => addEventListener(e, go, { passive: true }));
+})();
+
+/* ---------- Видео: на медленной сети не грузим тяжёлый файл ---------- */
+(function () {
+  const v = document.querySelector('.hero-vid');
+  if (!v) return;
+  const c = navigator.connection;
+  if (c && (c.saveData || /2g/.test(c.effectiveType || ''))) { v.removeAttribute('autoplay'); v.preload = 'none'; return; }
+  const p = v.play && v.play();
+  if (p && p.catch) p.catch(() => {});   // автоплей может быть запрещён — останется постер
+})();
+
+/* ============================================================
+   ЖИВОЙ ФОН v3 — слои + связь с прокруткой
+   - Создаёт .aurora первым ребёнком <body> (если её нет в разметке).
+   - На прокрутке (passive + один rAF на кадр) пишет ДВЕ переменные на .aurora:
+       --au-s  синус от scrollY → параллакс слоёв с разной скоростью
+       --au-w  «теплота» 0…1: красный у видео и у брони, сталь в середине страницы
+   - Само движение цвета — CSS-анимации transform, JS в нём не участвует.
+   ============================================================ */
+(function () {
+  var d = document, root = d.documentElement;
+  var au = d.querySelector('.aurora');
+  if (!au) {
+    au = d.createElement('div');
+    au.className = 'aurora';
+    au.setAttribute('aria-hidden', 'true');
+    au.innerHTML =
+      '<div class="au-p au-p3"><i class="au-f au-f3"></i></div>' +   // сталь — ниже всех
+      '<div class="au-p au-p2"><i class="au-f au-f2"></i></div>' +   // бордо
+      '<div class="au-p au-p1"><i class="au-f au-f1"></i></div>' +   // жар
+      '<div class="au-p au-p4"><i class="au-shape"><i class="au-comet"></i></i></div>';     // кольцо + комета
+    d.body.insertBefore(au, d.body.firstChild);
+  }
+
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var hero = d.getElementById('hero');
+  var book = d.getElementById('booking');
+  var vh = 0, heroH = 0, bookTop = Infinity, queued = false, lastS = '', lastW = '';
+
+  function clamp01(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
+  function smooth(x) { x = clamp01(x); return x * x * (3 - 2 * x); }
+
+  function measure() {
+    vh = window.innerHeight || 800;
+    heroH = hero ? hero.offsetHeight : vh;
+    bookTop = book ? book.getBoundingClientRect().top + window.pageYOffset : Infinity;
+  }
+
+  function update() {
+    queued = false;
+    var y = window.pageYOffset;
+    // параллакс: синус, чтобы сдвиг был ограничен на любой длине страницы (период ≈ 6,9 тыс. px)
+    var s = Math.sin(y / 1100).toFixed(3);
+    // теплота: 1 пока виден первый экран → 0 к середине → снова 1 при подходе к брони
+    var wTop = 1 - smooth((y - heroH * 0.35) / (vh * 1.3));
+    var wBot = smooth((y + vh * 1.25 - bookTop) / (vh * 1.1));
+    var w = Math.max(wTop, wBot).toFixed(3);
+    if (s !== lastS) { au.style.setProperty('--au-s', s); lastS = s; }
+    if (w !== lastW) { au.style.setProperty('--au-w', w); lastW = w; }
+  }
+
+  function request() { if (!queued) { queued = true; requestAnimationFrame(update); } }
+
+  measure(); update();
+  window.addEventListener('scroll', request, { passive: true });
+  window.addEventListener('resize', function () { measure(); request(); }, { passive: true });
+  // высота страницы меняется после загрузки картинок/шрифтов — перемеряем позицию брони
+  window.addEventListener('load', function () { measure(); request(); });
+  if (window.ResizeObserver) new ResizeObserver(function () { measure(); request(); }).observe(d.body);
+})();
+
+/* ============================================================
+   ЖИВОЙ ФОН «MESH»: абстрактный текучий градиент на весь экран (WebGL1, без библиотек)
+   - несколько крупных цветовых полей (кармин / красный / вино / сталь) плавают по экрану
+     и перетекают друг в друга; пространство слегка «течёт» (domain warp) — формы
+     полей всё время меняются, как у меш-градиента
+   - прокрутка сдвигает всё поле: в каждой секции свой рисунок, а не одно пятно
+   - считается в ~0.3 от размера экрана (градиент гладкий), 30 fps, стоп на скрытой вкладке;
+     без WebGL — статичный CSS-градиент, prefers-reduced-motion — один кадр
+   Пресет цвета: window.MESH_PRESET (1 красный/графит, 2 красный+сталь, 3 тёмный кармин)
+   ============================================================ */
+(function () {
+  'use strict';
+  var d = document, w = window;
+  var still = !!(w.matchMedia && w.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var PRESETS = {
+    1: { base: [.034, .038, .048], c: [[.46, .045, .06], [.66, .09, .075], [.22, .025, .05], [.11, .135, .175]], s: [1, .8, .9, .7], b: .42 },
+    2: { base: [.03, .035, .045], c: [[.6, .07, .065], [.15, .21, .29], [.32, .035, .055], [.2, .24, .3]], s: [1, .9, .8, .55], b: .45 },
+    3: { base: [.022, .025, .032], c: [[.32, .03, .05], [.5, .055, .06], [.14, .02, .045], [.075, .085, .11]], s: [1, .75, .9, .7], b: .5 }
+  };
+  var P = PRESETS[w.MESH_PRESET] || PRESETS[3];   // выбран «Тёмный кармин»
+
+  var host = d.createElement('div');
+  host.className = 'mesh-bg'; host.setAttribute('aria-hidden', 'true');
+  var cv = d.createElement('canvas'); host.appendChild(cv);
+  d.body.insertBefore(host, d.body.firstChild);
+  function fallback() { host.classList.add('nogl'); }
+
+  var gl = null;
+  try {
+    var opt = { alpha: false, antialias: false, depth: false, stencil: false, preserveDrawingBuffer: false, powerPreference: 'low-power' };
+    gl = cv.getContext('webgl', opt) || cv.getContext('experimental-webgl', opt);
+  } catch (e) { gl = null; }
+  if (!gl) { fallback(); return; }
+
+  var VS = 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
+  var FS = [
+    '#ifdef GL_FRAGMENT_PRECISION_HIGH', 'precision highp float;', '#else', 'precision mediump float;', '#endif',
+    'uniform vec2 u_res; uniform float u_t; uniform float u_scroll; uniform float u_port;',
+    'uniform vec3 u_base; uniform vec3 u_c1; uniform vec3 u_c2; uniform vec3 u_c3; uniform vec3 u_c4;',
+    'uniform vec4 u_s; uniform float u_b;',
+    'float hash(vec2 p){vec3 p3=fract(vec3(p.xyx)*.1031);p3+=dot(p3,p3.yzx+33.33);return fract((p3.x+p3.y)*p3.z);}',
+    'float noise(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.-2.*f);',
+    '  return mix(mix(hash(i),hash(i+vec2(1.,0.)),u.x),mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),u.x),u.y);}',
+    'float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*noise(p);p=mat2(1.6,1.2,-1.2,1.6)*p+3.1;a*=.5;}return v;}',
+    /* вес цветового поля: мягкий гауссов «ком» вокруг движущейся точки */
+    'float blob(vec2 p,vec2 c,float r){vec2 d=p-c;return exp(-dot(d,d)/(r*r));}',
+    'void main(){',
+    '  vec2 p=(gl_FragCoord.xy-.5*u_res)/u_res.y;',
+    '  float t=u_t;',
+    '  float sy=u_scroll*3.2;',
+    '  vec2 fp=p*1.05+vec2(0.,sy*.55);',
+    '  vec2 q=vec2(fbm(fp*1.2+vec2(0.,t*.09)),fbm(fp*1.2+vec2(5.2,1.3)+vec2(t*.07,-t*.05)));',
+    '  vec2 wp=p+(q-.5)*1.15;',                               /* поля остаются на экране; прокрутка меняет их рисунок и траектории */
+    '  float sx=mix(1.,.6,u_port);',
+    '  vec2 P1=vec2(sx*(.55*sin(t*.16+sy*.9)+.25),.38*cos(t*.13+1.)+.05);',
+    '  vec2 P2=vec2(sx*(.6*cos(t*.12+2.)-.2),.42*sin(t*.17+sy*.7));',
+    '  vec2 P3=vec2(sx*(.45*sin(t*.19+4.)+.45),.36*sin(t*.11+sy*1.1+3.)-.1);',
+    '  vec2 P4=vec2(sx*(.55*cos(t*.14+5.)-.35),.4*cos(t*.15+sy*.8+2.)+.08);',
+    '  float r=mix(.46,.4,u_port);',
+    '  float w1=u_s.x*blob(wp,P1,r*1.05), w2=u_s.y*blob(wp,P2,r*.85), w3=u_s.z*blob(wp,P3,r*1.2), w4=u_s.w*blob(wp,P4,r);',
+    '  float B=u_b;',
+    '  vec3 col=(u_base*B+u_c1*w1+u_c2*w2+u_c3*w3+u_c4*w4)/(B+w1+w2+w3+w4);',
+    /* свечение там, где поля сливаются — объём, а не плоская заливка */
+    '  float glow=smoothstep(.35,1.4,w1+w2);',
+    '  col+=u_c2*glow*.12;',
+    /* колонка текста слева на компьютере чуть темнее */
+    '  col*=mix(mix(.78,1.,smoothstep(-.95,.05,p.x)),1.,u_port);',
+    '  col+=(hash(gl_FragCoord.xy+fract(t*7.))-.5)/255.;',
+    '  gl_FragColor=vec4(clamp(col,0.,1.),1.);',
+    '}'
+  ].join('\n');
+
+  function sh(type, src) {
+    var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+    return s;
+  }
+  var prog;
+  try {
+    prog = gl.createProgram();
+    gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+  } catch (e) { fallback(); return; }
+  gl.useProgram(prog);
+  var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  var loc = gl.getAttribLocation(prog, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  var U = {};
+  ['u_res', 'u_t', 'u_scroll', 'u_port', 'u_base', 'u_c1', 'u_c2', 'u_c3', 'u_c4', 'u_s', 'u_b'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+  gl.uniform3fv(U.u_base, P.base); gl.uniform3fv(U.u_c1, P.c[0]); gl.uniform3fv(U.u_c2, P.c[1]);
+  gl.uniform3fv(U.u_c3, P.c[2]); gl.uniform3fv(U.u_c4, P.c[3]);
+  gl.uniform4fv(U.u_s, P.s); gl.uniform1f(U.u_b, P.b);
+
+  /* размер: градиент гладкий — хватает ~0.3 от экрана, растягивает CSS */
+  var cw = 0, ch = 0, port = 0;
+  function size() {
+    var W = host.clientWidth || w.innerWidth, H = host.clientHeight || w.innerHeight;
+    var k = Math.min(0.32, 640 / Math.max(W, H));
+    var nw = Math.max(2, Math.round(W * k)), nh = Math.max(2, Math.round(H * k));
+    port = Math.max(0, Math.min(1, (1.15 - W / H) / 0.55));
+    if (nw === cw && nh === ch) return false;
+    cw = cv.width = nw; ch = cv.height = nh; gl.viewport(0, 0, cw, ch);
+    return true;
+  }
+  var docMax = 1, sT = 0;
+  function readScroll() { sT = Math.min(1, Math.max(0, w.scrollY / docMax)); }
+  function measure() { docMax = Math.max(1, d.documentElement.scrollHeight - w.innerHeight); readScroll(); }
+  w.addEventListener('scroll', readScroll, { passive: true });
+  w.addEventListener('load', measure);
+  if (w.ResizeObserver) { try { new ResizeObserver(measure).observe(d.body); } catch (e) {} }
+  measure();
+
+  var sC = sT, T0 = performance.now(), T_OFF = 40;
+  function draw(now) {
+    gl.uniform2f(U.u_res, cw, ch);
+    gl.uniform1f(U.u_t, (still ? T_OFF : T_OFF + (now - T0) / 1000) % 3600);
+    gl.uniform1f(U.u_scroll, sC); gl.uniform1f(U.u_port, port);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+  size();
+  var raf = 0, last = 0, lastTick = 0, shown = false;
+  function frame(now) {
+    raf = w.requestAnimationFrame(frame);
+    if (now - last < 31) return;                              /* ~30 fps */
+    var dt = Math.min(0.1, (now - (lastTick || now)) / 1000); lastTick = now; last = now;
+    sC += (sT - sC) * (1 - Math.exp(-dt * 3));               /* плавная инерция прокрутки */
+    draw(now);
+    if (!shown) { shown = true; host.classList.add('on'); }
+  }
+  function start() { if (!raf && !still && !d.hidden) { last = 0; lastTick = 0; raf = w.requestAnimationFrame(frame); } }
+  function stop() { if (raf) { w.cancelAnimationFrame(raf); raf = 0; } }
+  var rT = 0;
+  w.addEventListener('resize', function () {
+    clearTimeout(rT);
+    rT = setTimeout(function () { if (size() && still) draw(performance.now()); measure(); }, 150);
+  });
+  d.addEventListener('visibilitychange', function () { if (d.hidden) stop(); else start(); });
+  cv.addEventListener('webglcontextlost', function (e) { e.preventDefault(); stop(); fallback(); });
+  if (still) { draw(performance.now()); host.classList.add('on'); } else start();
+})();
+
+/* ---------- v5: размытые абстрактные формы по всей странице ---------- */
+// У каждой секции своя размытая форма, стороны чередуются (право / лево / право…),
+// у длинных секций — две. Позиции считаются от реальных секций и пересчитываются,
+// когда меняется высота страницы. Анимация идёт только у форм рядом с экраном.
+(function () {
+  var main = document.querySelector('main');
+  if (!main) return;
+  var box = document.createElement('div');
+  box.className = 'bshapes';
+  box.setAttribute('aria-hidden', 'true');
+  main.insertBefore(box, main.firstChild);
+
+  var PAL = ['red', 'wine', 'red', 'steel', 'wine', 'red'];
+  var io = ('IntersectionObserver' in window) ? new IntersectionObserver(function (es) {
+    es.forEach(function (e) { e.target.classList.toggle('run', e.isIntersecting); });
+  }, { rootMargin: '300px 0px' }) : null;
+
+  var lastKey = '';
+  function build() {
+    var W = document.documentElement.clientWidth, mob = W < 700;
+    var mainTop = main.getBoundingClientRect().top + window.pageYOffset;
+    var secs = [].slice.call(main.querySelectorAll(':scope > section'));
+    var spots = [];
+    secs.forEach(function (s, i) {
+      var top = s.getBoundingClientRect().top + window.pageYOffset - mainTop, h = s.offsetHeight;
+      if (i === 0 && s.classList.contains('hero-video')) {
+        // первая форма принимает растворяющееся видео — у нижнего края первого экрана, справа
+        spots.push({ y: top + h * 0.92, side: 1 });
+        return;
+      }
+      spots.push({ y: top + Math.min(h * 0.32, 420), side: spots.length % 2 ? -1 : 1 });
+      if (h > (mob ? 1500 : 1100)) spots.push({ y: top + h * 0.78, side: spots.length % 2 ? -1 : 1 });
+    });
+    var key = W + ':' + spots.map(function (p) { return Math.round(p.y / 40); }).join(',');
+    if (key === lastKey) return;
+    lastKey = key;
+
+    if (io) io.disconnect();
+    box.innerHTML = '';
+    spots.forEach(function (p, i) {
+      var el = document.createElement('i');
+      var size = mob ? W * (1.15 + (i % 3) * 0.15) : Math.min(1150, W * (0.5 + (i % 3) * 0.08));
+      var x = mob ? W * (p.side > 0 ? 0.78 : 0.22) : W * (p.side > 0 ? 0.8 : 0.18);
+      el.className = 'bshape ' + PAL[i % PAL.length];
+      el.style.cssText =
+        '--x:' + Math.round(x) + 'px;--y:' + Math.round(p.y) + 'px;' +
+        '--w:' + Math.round(size) + 'px;--h:' + Math.round(size * 0.78) + 'px;' +
+        '--dd:' + (15 + (i * 7) % 9) + 's;--dm:' + (11 + (i * 5) % 7) + 's;--dl:-' + (i * 3.7).toFixed(1) + 's;' +
+        '--df:' + (3.6 + (i * 1.3) % 2.6).toFixed(1) + 's;' +   // у каждой формы свой ритм мерцания
+        '--mx:' + (mob ? 8 : 6) + 'vw;--my:' + (mob ? 4 : 6) + 'vh';
+      box.appendChild(el);
+      if (io) io.observe(el); else el.classList.add('run');
+    });
+  }
+
+  build();
+  window.addEventListener('load', build);
+  var rT = 0;
+  function later() { clearTimeout(rT); rT = setTimeout(build, 200); }
+  window.addEventListener('resize', later);
+  if ('ResizeObserver' in window) new ResizeObserver(later).observe(main);
 })();
