@@ -599,11 +599,26 @@ makeSlider({ wrap: '.zm-wrap', track: '.zm-list', arrows: '.zm-arrow', dots: '.z
   const img = document.getElementById('lbImg'), cap = document.getElementById('lbCap');
   let list = [], cur = 0;
 
-  function show(i) {
+  // смена фото в просмотре: старое уезжает и гаснет, новое (уже декодированное) выезжает с той стороны, куда листают
+  let swapT = 0;
+  function show(i, dir) {
     cur = (i + list.length) % list.length;
-    img.src = list[cur].src; img.alt = list[cur].alt || '';
-    cap.textContent = list[cur].cap || '';
+    const it = list[cur];
+    cap.textContent = it.cap || '';
     lb.classList.toggle('single', list.length < 2);
+    if (lb.hidden || !img.getAttribute('src') || !dir) { img.src = it.src; img.alt = it.alt || ''; return; }
+    img.style.setProperty('--lb-dx', (dir > 0 ? -1 : 1) * 32 + 'px');
+    img.classList.add('lb-out');
+    clearTimeout(swapT);
+    const pre = new Image(); pre.src = it.src;
+    const ready = pre.decode ? pre.decode().catch(() => {}) : Promise.resolve();
+    swapT = setTimeout(() => ready.then(() => {
+      if (list[cur] !== it) return;                       // пока грузилось, уже перелистнули дальше
+      img.style.setProperty('--lb-dx', (dir > 0 ? 1 : -1) * 32 + 'px');
+      img.classList.add('lb-from'); img.classList.remove('lb-out');
+      img.src = it.src; img.alt = it.alt || '';
+      requestAnimationFrame(() => requestAnimationFrame(() => img.classList.remove('lb-from')));
+    }), 200);
   }
   function open(items, i) {
     list = items; show(i); lb.hidden = false; document.body.style.overflow = 'hidden';
@@ -626,21 +641,21 @@ makeSlider({ wrap: '.zm-wrap', track: '.zm-list', arrows: '.zm-arrow', dots: '.z
   }));
 
   lb.querySelector('.lb-close').addEventListener('click', close);
-  lb.querySelector('.lb-prev').addEventListener('click', () => show(cur - 1));
-  lb.querySelector('.lb-next').addEventListener('click', () => show(cur + 1));
+  lb.querySelector('.lb-prev').addEventListener('click', () => show(cur - 1, -1));
+  lb.querySelector('.lb-next').addEventListener('click', () => show(cur + 1, 1));
   lb.addEventListener('click', e => { if (e.target === lb) close(); });
   addEventListener('keydown', e => {
     if (lb.hidden) return;
     if (e.key === 'Escape') close();
-    if (e.key === 'ArrowLeft') show(cur - 1);
-    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1, -1);
+    if (e.key === 'ArrowRight') show(cur + 1, 1);
   });
   // свайп внутри лайтбокса
   let sx = 0;
   lb.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
   lb.addEventListener('touchend', e => {
     const d = e.changedTouches[0].clientX - sx;
-    if (Math.abs(d) > 40 && list.length > 1) show(cur + (d < 0 ? 1 : -1));
+    if (Math.abs(d) > 40 && list.length > 1) show(cur + (d < 0 ? 1 : -1), d < 0 ? 1 : -1);
   }, { passive: true });
 })();
 
@@ -972,3 +987,55 @@ makeSlider({ wrap: '.zm-wrap', track: '.zm-list', arrows: '.zm-arrow', dots: '.z
   window.addEventListener('resize', later);
   if ('ResizeObserver' in window) new ResizeObserver(later).observe(main);
 })();
+
+/* ---------- Фото: докачиваем заранее и показываем плавно ---------- */
+// GitHub отдаёт файлы небыстро, а «ленивые» фото начинали грузиться, только когда до них почти долистали.
+// Теперь: 1) всё, что ближе 1600 px к экрану, грузится сразу; 2) после старта страницы остальные фото
+// тихо докачиваются по очереди (по два), в порядке страницы; 3) фото, которое ещё грузится, проявляется плавно.
+(function () {
+  const imgs = [...document.querySelectorAll('img[loading="lazy"]')];
+  if (!imgs.length) return;
+  const eager = im => { if (im.loading === 'lazy') im.loading = 'eager'; };
+
+  document.querySelectorAll('main img').forEach(im => {
+    if (im.complete && im.naturalWidth) return;
+    im.classList.add('img-fade');
+    const done = () => {
+      im.classList.add('img-in');
+      setTimeout(() => im.classList.remove('img-fade', 'img-in'), 700);   // вернуть картинке её обычные переходы
+    };
+    im.addEventListener('load', done, { once: true });
+    im.addEventListener('error', done, { once: true });
+  });
+
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { eager(e.target); io.unobserve(e.target); }
+    }), { rootMargin: '1600px 0px' });
+    imgs.forEach(im => io.observe(im));
+  } else imgs.forEach(eager);
+
+  const c = navigator.connection;
+  if (c && (c.saveData || /2g/.test(c.effectiveType || ''))) return;   // экономия трафика — только по мере прокрутки
+  let k = 0;
+  const next = () => {
+    const im = imgs[k++]; if (!im) return;
+    if (im.complete && im.naturalWidth) return next();
+    eager(im);
+    im.addEventListener('load', next, { once: true });
+    im.addEventListener('error', next, { once: true });
+  };
+  const warm = () => { next(); next(); };
+  const start = () => setTimeout(() => ('requestIdleCallback' in window) ? requestIdleCallback(warm, { timeout: 2000 }) : warm(), 1000);
+  if (document.readyState === 'complete') start(); else addEventListener('load', start, { once: true });
+})();
+
+/* ---------- Цены на телефоне: тап по табло — плавно к залу и вспышка красной линии ---------- */
+document.querySelectorAll('.rxm-board a').forEach(a => a.addEventListener('click', e => {
+  const t = document.querySelector(a.getAttribute('href'));
+  if (!t) return;
+  e.preventDefault();
+  t.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  t.classList.remove('flash'); void t.offsetWidth; t.classList.add('flash');
+  clearTimeout(t._f); t._f = setTimeout(() => t.classList.remove('flash'), 1400);
+}));

@@ -53,7 +53,7 @@
   <link rel="dns-prefetch" href="https://yandex.ru">
   <link rel="dns-prefetch" href="https://maps.yastatic.net">
   <link rel="dns-prefetch" href="https://yastatic.net">
-<link rel="stylesheet" href="css/site.css?v=22">
+<link rel="stylesheet" href="css/site.css?v=25">
 </head>
 <body>
 <div class="aurora" aria-hidden="true"><div class="au-p au-p3"><i class="au-f au-f3"></i></div><div class="au-p au-p2"><i class="au-f au-f2"></i></div><div class="au-p au-p1"><i class="au-f au-f1"></i></div><div class="au-p au-p4"><i class="au-shape"><i class="au-comet"></i></i></div></div>
@@ -297,6 +297,88 @@
         <p class="disclaimer">Прайс с плаката клуба и карточки на Яндекс.Картах</p>
       </aside>
     </div>
+  
+    <!-- МОБИЛЬНАЯ ВЕРСИЯ БЛОКА ЦЕН: «прайс-лист одним листом» (показывается только на телефоне, ≤700px).
+         На компьютере остаётся блок .rx-grid выше — с раскрытием по наведению. -->
+    <div class="rxm">
+      <p class="rxm-lead">Все залы и тарифы на одном листе. Цены с&nbsp;прайса клуба.</p>
+
+      <div class="rxm-cash" role="note"><b>25%</b><span>кэшбек<br>с каждого визита</span></div>
+
+      <div class="rxm-board" role="navigation" aria-label="Залы и цены от">
+        <a href="#rxm-racing"><span class="rxm-n"><i>01</i>Racing</span><span class="rxm-p"><small>от</small>350<span class="rxm-rub">₽</span></span></a>
+        <a href="#rxm-pro"><span class="rxm-n"><i>02</i>Pro</span><span class="rxm-p"><small>от</small>139<span class="rxm-rub">₽</span></span></a>
+        <a href="#rxm-standart"><span class="rxm-n"><i>03</i>Standart</span><span class="rxm-p"><small>от</small>119<span class="rxm-rub">₽</span></span></a>
+        <a href="#rxm-ps5"><span class="rxm-n"><i>04</i>PS5</span><span class="rxm-p"><small>от</small>280<span class="rxm-rub">₽</span></span></a>
+      </div>
+
+      <div class="rxm-halls">
+        <article class="rxm-hall" id="rxm-racing">
+          <span class="rxm-no">01</span>
+          <div class="rxm-hh"><h3>Racing</h3><p class="rxm-from"><small>от</small>350<span class="rxm-rub">₽</span></p></div>
+          <p class="rxm-sub">Симулятор · 2 кокпита</p>
+          <ul class="rxm-menu">
+            <li><span class="rxm-t">30 минут</span><i class="rxm-ld"></i><b>350<span class="rxm-rub">₽</span></b></li>
+            <li><span class="rxm-t">1 час</span><i class="rxm-ld"></i><b>500<span class="rxm-rub">₽</span></b></li>
+          </ul>
+          <p class="rxm-kit"><span class="rxm-k">Железо</span><em>Руль MOZA с прямым приводом</em><span class="rxm-s">&nbsp;/ </span>три изогнутых экрана&nbsp;GIGABYTE<span class="rxm-s">&nbsp;/ </span>секвентальная коробка и ручник&nbsp;MOZA<span class="rxm-s">&nbsp;/ </span>ковш BRIDE на жёсткой раме<span class="rxm-s">&nbsp;/ </span>Ryzen&nbsp;7&nbsp;7700 · <em>RTX&nbsp;4080</em></p>
+        </article>
+
+        <article class="rxm-hall" id="rxm-pro">
+          <span class="rxm-no">02</span>
+          <div class="rxm-hh"><h3>Pro</h3><p class="rxm-from"><small>от</small>139<span class="rxm-rub">₽</span></p></div>
+          <p class="rxm-sub">ПК-зал · 10 мест</p>
+          <ul class="rxm-menu">
+            <li><span class="rxm-t">1 час</span><i class="rxm-ld"></i><b>139<span class="rxm-rub">₽</span></b></li>
+            <li><span class="rxm-t">3 часа</span><i class="rxm-ld"></i><b>340<span class="rxm-rub">₽</span></b></li>
+            <li><span class="rxm-t">5 часов</span><i class="rxm-ld"></i><b>490<span class="rxm-rub">₽</span></b></li>
+            <li><span class="rxm-t">Утро</span><i class="rxm-ld"></i><b>250<span class="rxm-rub">₽</span></b></li>
+            <li><span class="rxm-t">Ночь<small>22:00–08:00</small></span><i class="rxm-ld"></i><b>459<span class="rxm-rub">₽</span></b></li>
+            <li><span class="rxm-t">Ночь в выходные</span><i class="rxm-ld"></i><b>499<span class="rxm-rub">₽</span></b></li>
+          </ul>
+          <p class="rxm-kit"><span class="rxm-k">Железо</span>Intel Core i7-9700K<span class="rxm-s">&nbsp;/ </span><em>GeForce RTX&nbsp;3060&nbsp;Ti</em><span class="rxm-s">&nbsp;/ </span>16&nbsp;ГБ оперативной памяти<span class="rxm-s">&nbsp;/ </span>монитор Acer 27"&nbsp;·&nbsp;<em>240&nbsp;Гц</em><span class="rxm-s">&nbsp;/ </span>интернет от 100&nbsp;Мбит/с</p>
+        </article>
+
+        <article class="rxm-hall" id="rxm-standart">
+          <span class="rxm-no">03</span>
+          <div class="rxm-hh"><h3>Standart</h3><p class="rxm-from"><small>от</small>119<span class="rxm-rub">₽</span></p></div>
+          <p class="rxm-sub">ПК-зал · 17 мест</p>
+          <ul class="rxm-menu">
+            <li><span class="rxm-t">1 час</span><i class="rxm-ld"></i><b>119<span class="rxm-rub">₽</span></b></li>
+            <li><span class="rxm-t">3 часа</span><i class="rxm-ld"></i><b>280<span class="rxm-rub">₽</span></b></li>
+            <li><span class="rxm-t">5 часов</span><i class="rxm-ld"></i><b>420<span class="rxm-rub">₽</span></b></li>
+            <li><span class="rxm-t">Утро</span><i class="rxm-ld"></i><b>200<span class="rxm-rub">₽</span></b></li>
+            <li><span class="rxm-t">Ночь<small>22:00–08:00</small></span><i class="rxm-ld"></i><b>399<span class="rxm-rub">₽</span></b></li>
+            <li><span class="rxm-t">Ночь в выходные</span><i class="rxm-ld"></i><b>459<span class="rxm-rub">₽</span></b></li>
+          </ul>
+          <p class="rxm-kit"><span class="rxm-k">Железо</span>Intel Core i7-8700K<span class="rxm-s">&nbsp;/ </span><em>GeForce RTX&nbsp;2060</em><span class="rxm-s">&nbsp;/ </span>16&nbsp;ГБ оперативной памяти<span class="rxm-s">&nbsp;/ </span>монитор Acer 27"&nbsp;·&nbsp;<em>144&nbsp;Гц</em><span class="rxm-s">&nbsp;/ </span>интернет от 100&nbsp;Мбит/с</p>
+        </article>
+
+        <article class="rxm-hall" id="rxm-ps5">
+          <span class="rxm-no">04</span>
+          <div class="rxm-hh"><h3>PlayStation 5</h3><p class="rxm-from"><small>от</small>280<span class="rxm-rub">₽</span></p></div>
+          <p class="rxm-sub">Лаунж · большой экран</p>
+          <ul class="rxm-menu">
+            <li><span class="rxm-t">1 час</span><i class="rxm-ld"></i><b>280<span class="rxm-rub">₽</span></b></li>
+            <li><span class="rxm-t">3 часа</span><i class="rxm-ld"></i><b>600<span class="rxm-rub">₽</span></b></li>
+            <li><span class="rxm-t">Ночь</span><i class="rxm-ld"></i><b>800<span class="rxm-rub">₽</span></b></li>
+          </ul>
+          <p class="rxm-kit"><span class="rxm-k">Что внутри</span><em>PlayStation 5 и два геймпада&nbsp;DualSense</em><span class="rxm-s">&nbsp;/ </span>телевизор на стене, диван на компанию<span class="rxm-s">&nbsp;/ </span>отдельная комната за красной арматурой<span class="rxm-s">&nbsp;/ </span>EA&nbsp;FC&nbsp;27 и библиотека игр</p>
+        </article>
+      </div>
+
+      <div class="rxm-terms">
+        <div><span class="rxm-l">Ночь 22:00–08:00</span><span class="rxm-v"><small>от</small>399<span class="rxm-rub">₽</span></span><p>Ночь дешевле трёх часов днём</p></div>
+        <div><span class="rxm-l">Утренний тариф</span><span class="rxm-v"><small>от</small>200<span class="rxm-rub">₽</span></span><p>за час</p></div>
+        <div><span class="rxm-l">Круглосуточно</span><span class="rxm-v">24/7</span><p>без выходных и перерывов</p></div>
+        <div><span class="rxm-l">Оплата как удобно</span><span class="rxm-v">3 способа</span><p>карта, наличные, СБП</p></div>
+      </div>
+
+      <a class="rxm-btn" href="#booking"><span>Забронировать</span>
+        <svg viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M0 6h20M15 1l5 5-5 5"/></svg>
+      </a>
+      <p class="rxm-note">Прайс с плаката клуба и карточки на Яндекс.Картах</p>
+    </div>
   </section>
 
   <!-- ================= 03 · Зоны ================= -->
@@ -478,7 +560,7 @@
       <p>Центральный район, в двух шагах от набережной. Вход с улицы, спуск в цоколь — ищите красную подсветку.</p>
     </div>
     <div class="map-wrap" id="mapWrap">
-      <div class="map-frame" data-src="https://yandex.ru/map-widget/v1/?ll=44.512491%2C48.702996&z=16&pt=44.512491%2C48.702996%2Cpm2rdl"><div class="map-ph" aria-hidden="true"><picture><source media="(max-width:700px)" srcset="img/map-snap-m.webp 2x"><img src="img/map-snap.webp" alt="" decoding="async" fetchpriority="low"></picture><span class="map-attr">© Яндекс Карты</span></div></div>
+      <div class="map-frame" data-src="https://yandex.ru/map-widget/v1/?ll=44.512491%2C48.702996&z=16&pt=44.512491%2C48.702996%2Cpm2rdl"><div class="map-ph" aria-hidden="true"><picture><source media="(max-width:700px)" srcset="img/map-snap-m.webp 2x"><img src="img/map-snap.webp" alt="" loading="lazy" decoding="async"></picture><span class="map-attr">© Яндекс Карты</span></div></div>
       <div class="map-card">
         <span class="map-lbl">Адрес</span>
         <b>Краснознаменская, 6<br>цокольный этаж</b>
@@ -504,16 +586,16 @@
     </div>
     <div class="gal-wrap">
       <div class="gal-track">
-        <figure><img src="img/g-racing-2.webp" alt="Два кокпита Skill Racing сверху"><figcaption>Racing — два кокпита с триплами</figcaption></figure>
-        <figure><img src="img/g-shifter.webp" alt="Рычаг MOZA Racing и руль"><figcaption>Секвентальная коробка MOZA</figcaption></figure>
-        <figure><img src="img/g01.webp" alt="Бар и стойка администратора"><figcaption>Бар и стойка</figcaption></figure>
-        <figure><img src="img/g02.webp" alt="Гости за игрой"><figcaption>Pro-зал</figcaption></figure>
-        <figure><img src="img/g-ps5-tv.webp" alt="PS5-лаунж: телевизор с EA FC 27"><figcaption>PS5 Lounge</figcaption></figure>
-        <figure><img src="img/g03.webp" alt="Компания гостей в клубе"><figcaption>Компанией</figcaption></figure>
-        <figure><img src="img/g-ps5-pads.webp" alt="Геймпады DualSense на столе"><figcaption>Два DualSense</figcaption></figure>
-        <figure><img src="img/g06.webp" alt="Гостья клуба"><figcaption>Standart</figcaption></figure>
-        <figure><img src="img/g07.webp" alt="Команда клуба"><figcaption>Команда</figcaption></figure>
-        <figure><img src="img/g-ps5-console.webp" alt="PlayStation 5 на бетонной стене"><figcaption>PlayStation 5</figcaption></figure>
+        <figure><img src="img/g-racing-2.webp" loading="lazy" decoding="async" alt="Два кокпита Skill Racing сверху"><figcaption>Racing — два кокпита с триплами</figcaption></figure>
+        <figure><img src="img/g-shifter.webp" loading="lazy" decoding="async" alt="Рычаг MOZA Racing и руль"><figcaption>Секвентальная коробка MOZA</figcaption></figure>
+        <figure><img src="img/g01.webp" loading="lazy" decoding="async" alt="Бар и стойка администратора"><figcaption>Бар и стойка</figcaption></figure>
+        <figure><img src="img/g02.webp" loading="lazy" decoding="async" alt="Гости за игрой"><figcaption>Pro-зал</figcaption></figure>
+        <figure><img src="img/g-ps5-tv.webp" loading="lazy" decoding="async" alt="PS5-лаунж: телевизор с EA FC 27"><figcaption>PS5 Lounge</figcaption></figure>
+        <figure><img src="img/g03.webp" loading="lazy" decoding="async" alt="Компания гостей в клубе"><figcaption>Компанией</figcaption></figure>
+        <figure><img src="img/g-ps5-pads.webp" loading="lazy" decoding="async" alt="Геймпады DualSense на столе"><figcaption>Два DualSense</figcaption></figure>
+        <figure><img src="img/g06.webp" loading="lazy" decoding="async" alt="Гостья клуба"><figcaption>Standart</figcaption></figure>
+        <figure><img src="img/g07.webp" loading="lazy" decoding="async" alt="Команда клуба"><figcaption>Команда</figcaption></figure>
+        <figure><img src="img/g-ps5-console.webp" loading="lazy" decoding="async" alt="PlayStation 5 на бетонной стене"><figcaption>PlayStation 5</figcaption></figure>
       </div>
       <button class="gal-arrow" type="button" data-dir="-1" aria-label="Предыдущее фото">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4 L7 12 L15 20"/></svg>
@@ -602,6 +684,6 @@
   <a class="mbar-btn" href="#booking"><span>Забронировать заезд</span></a>
 </div>
 
-<script src="js/site.js?v=22" defer></script>
+<script src="js/site.js?v=25" defer></script>
 </body>
 </html>
