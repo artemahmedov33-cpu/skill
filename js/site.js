@@ -1030,12 +1030,18 @@ makeSlider({ wrap: '.zm-wrap', track: '.zm-list', arrows: '.zm-arrow', dots: '.z
   if (document.readyState === 'complete') start(); else addEventListener('load', start, { once: true });
 })();
 
-/* ---------- Цены на телефоне: тап по табло — плавно к залу и вспышка красной линии ---------- */
-document.querySelectorAll('.rxm-board a').forEach(a => a.addEventListener('click', e => {
-  const t = document.querySelector(a.getAttribute('href'));
-  if (!t) return;
-  e.preventDefault();
-  t.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-  t.classList.remove('flash'); void t.offsetWidth; t.classList.add('flash');
-  clearTimeout(t._f); t._f = setTimeout(() => t.classList.remove('flash'), 1400);
-}));
+/* ---------- Цены на телефоне: залы-полоски раскрываются по нажатию; табло сверху открывает нужный зал ---------- */
+(function () {
+  const setOpen = (h, on) => { h.classList.toggle('open', on); h.querySelector('.rxm-head').setAttribute('aria-expanded', on); };
+  document.querySelectorAll('.rxm-hall').forEach(h =>
+    h.querySelector('.rxm-head').addEventListener('click', () => setOpen(h, !h.classList.contains('open'))));
+  document.querySelectorAll('.rxm-board a').forEach(a => a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (!t) return;
+    e.preventDefault();
+    setOpen(t, true);
+    t.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    t.classList.remove('flash'); void t.offsetWidth; t.classList.add('flash');
+    clearTimeout(t._f); t._f = setTimeout(() => t.classList.remove('flash'), 1400);
+  }));
+})();
