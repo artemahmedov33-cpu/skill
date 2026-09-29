@@ -2118,3 +2118,9 @@ img.img-fade.img-in{opacity:1}
 @media (min-width:701px){
   .hero-video .hero-vid{filter:saturate(.9) contrast(1.05) brightness(.9)}
 }
+
+/* телефон: вокруг уменьшенного видео — тёмный графит, а не живой фон (там были красные поля от градиента и форм);
+   низ по-прежнему растворяется маской .hero-bg */
+@media (max-width:700px){
+  .hero-video .hero-bg{background:var(--graphite-900)}
+}
