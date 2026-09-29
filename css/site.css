@@ -2093,3 +2093,22 @@ img.img-fade.img-in{opacity:1}
   .rxm-v{font-size:17px}
 }
 @media (prefers-reduced-motion:reduce){.rxm *{transition:none!important}}
+
+/* видео на телефоне «отдалено»: кадр уменьшен до 80 % и края растворены в фоне —
+   сцена выглядит дальше и читается целиком (сам ролик снят крупным планом, шире кадра показать нечего) */
+@media (max-width:700px){
+  .hero-video .hero-vid{
+    transform:scale(.8);transform-origin:50% 42%;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 13%,#000 87%,transparent 100%),linear-gradient(180deg,transparent 0,#000 11%,#000 100%);
+    -webkit-mask-composite:source-in;
+            mask-image:linear-gradient(90deg,transparent 0,#000 13%,#000 87%,transparent 100%),linear-gradient(180deg,transparent 0,#000 11%,#000 100%);
+            mask-composite:intersect;
+  }
+}
+
+/* телефон: затемнение видео легче (было .78 → .62 → .5 — сцену под текстом было не разглядеть),
+   читаемость текста держит мягкая тень под буквами */
+@media (max-width:700px){
+  .hero-video .hero-tint{background:linear-gradient(180deg, rgba(11,13,16,.62) 0%, rgba(11,13,16,.4) 48%, rgba(11,13,16,.5) 100%)}
+  .hero-video .hero-copy{text-shadow:0 1px 14px rgba(0,0,0,.6),0 0 2px rgba(0,0,0,.35)}
+}
