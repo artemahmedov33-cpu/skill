@@ -2112,3 +2112,9 @@ img.img-fade.img-in{opacity:1}
   .hero-video .hero-tint{background:linear-gradient(180deg, rgba(11,13,16,.62) 0%, rgba(11,13,16,.4) 48%, rgba(11,13,16,.5) 100%)}
   .hero-video .hero-copy{text-shadow:0 1px 14px rgba(0,0,0,.6),0 0 2px rgba(0,0,0,.35)}
 }
+
+/* КОМПЬЮТЕР — как было до правок против лагов: исходный ролик 1280×720 и цвет фильтром.
+   Лёгкое видео с вшитым цветом (hero-mobile.*) остаётся только для телефона (≤700px, см. <source media>) */
+@media (min-width:701px){
+  .hero-video .hero-vid{filter:saturate(.9) contrast(1.05) brightness(.9)}
+}
