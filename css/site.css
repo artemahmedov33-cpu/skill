@@ -2109,3 +2109,77 @@ img.img-fade.img-in{opacity:1}
 @media (min-width:701px){
   .hero-video .hero-vid{filter:saturate(.9) contrast(1.05) brightness(.9)}
 }
+
+/* ============================================================
+   БЛОК «МОБИЛЬНОЕ ПРИЛОЖЕНИЕ» (LANGAME) — в секции брони, вместо заглушки «скоро»
+   Компьютер: слева текст и QR-коды, в центре телефон, справа возможности.
+   Телефон: текст → телефон → возможности → кнопки магазинов (QR с телефона не отсканировать).
+   ============================================================ */
+.bk-grid{grid-template-columns:repeat(2,1fr)}
+
+.app-blk{
+  display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;
+  gap:clamp(28px,4vw,64px);margin-top:clamp(56px,7vw,96px);
+  padding-top:clamp(40px,5vw,64px);border-top:1px solid var(--concrete-500);
+}
+.app-h{
+  margin:0;font-family:var(--font-display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(28px,3.4vw,48px);line-height:1.08;letter-spacing:-.02em;
+}
+.app-lead{margin:18px 0 0;color:var(--concrete-100);font-size:15.5px;line-height:1.6;max-width:36ch}
+
+.app-qr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:28px;max-width:470px}
+.app-qr a{display:grid;gap:12px;justify-items:center;text-decoration:none;color:var(--white)}
+.app-qr img{width:100%;max-width:148px;height:auto;aspect-ratio:1;display:block;border-radius:10px;background:#F2F1EF;transition:transform .35s var(--ease-out)}
+.app-qr a:hover img{transform:translateY(-3px)}
+.app-qr span{display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:12px;letter-spacing:.04em;white-space:nowrap}
+.app-qr svg{width:17px;height:17px;fill:currentColor}
+
+.app-stores{display:none}
+.app-club{
+  display:inline-flex;align-items:center;gap:10px;margin-top:26px;
+  font-family:var(--font-mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--white);text-decoration:none;border-bottom:1px solid var(--red);padding-bottom:4px;transition:color .25s;
+}
+.app-club:hover{color:var(--red-hot)}
+
+/* ---------- телефон со скриншотом приложения ---------- */
+.app-phone{
+  width:292px;aspect-ratio:9/18.72;border-radius:44px;padding:11px;position:relative;
+  background:linear-gradient(160deg,#2a3038,#0b0d10 42%,#1e232a);
+  box-shadow:0 0 0 1px rgba(255,255,255,.07) inset,0 0 0 2px rgba(215,38,30,.55),0 40px 90px rgba(0,0,0,.55),0 0 80px rgba(215,38,30,.18);
+}
+.ap-screen{position:relative;height:100%;border-radius:34px;overflow:hidden;background:#171717}
+.ap-screen img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 0}
+.ap-island{position:absolute;left:50%;top:9px;width:86px;height:24px;margin-left:-43px;border-radius:14px;background:#000}
+/* ---------- возможности ---------- */
+.app-feat{list-style:none;margin:0;padding:0;align-self:center}
+.app-feat li{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:17px 0;border-bottom:1px solid var(--concrete-500);font-size:15px;color:var(--concrete-100);
+}
+.app-feat li:first-child{border-top:1px solid var(--concrete-500)}
+.app-feat svg{flex:none;width:22px;height:22px;fill:none;stroke:var(--red-hot);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* планшет: телефон уходит вниз, текст и возможности — в две колонки */
+@media (max-width:1100px){
+  .app-blk{grid-template-columns:1fr 1fr}
+  .app-phone{grid-column:1/-1;grid-row:2;justify-self:center}
+}
+/* телефон: всё в колонку, вместо QR — кнопки магазинов */
+@media (max-width:700px){
+  .bk-grid{grid-template-columns:1fr}
+  .app-blk{grid-template-columns:1fr;gap:30px}
+  .app-phone{grid-row:auto;width:min(292px,86vw)}
+  .app-qr{display:none}
+  .app-stores{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:22px}
+  .app-store{
+    display:flex;align-items:center;justify-content:center;min-height:50px;
+    border:1px solid var(--concrete-500);background:rgba(11,13,16,.7);color:var(--white);text-decoration:none;
+    font-family:var(--font-mono);font-size:13px;letter-spacing:.05em;
+  }
+  .app-store:last-child{grid-column:1/-1}
+  .app-store:active{border-color:var(--red);background:rgba(215,38,30,.14)}
+  .app-feat li{font-size:14.5px;padding:15px 0}
+}
+@media (prefers-reduced-motion:reduce){.app-qr img{transition:none}}
